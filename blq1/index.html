@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recursos expresivos en producciones audiovisuales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E8ECEE;
+  --surface:#FFFFFF;
+  --surface-2:#F2F5F6;
+  --ink:#11222D;
+  --ink-soft:#4A5F6C;
+  --line:#C9D3D8;
+  --azul:#15719F;
+  --azul-soft:#D6E9F3;
+  --ambar:#B5720C;
+  --ambar-soft:#F6E7CB;
+  --film:#11222D;
+  --film-ink:#E9EEF0;
+  --focus:#15719F;
+  --shadow:0 1px 0 var(--line);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D161C;
+    --surface:#14222B;
+    --surface-2:#1B2B35;
+    --ink:#E3EAEE;
+    --ink-soft:#9DB1BC;
+    --line:#2C3F4B;
+    --azul:#6EC0E8;
+    --azul-soft:#173544;
+    --ambar:#E5AC4A;
+    --ambar-soft:#3A2D14;
+    --film:#060D11;
+    --film-ink:#E9EEF0;
+    --focus:#6EC0E8;
+    --shadow:0 1px 0 var(--line);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D161C;
+  --surface:#14222B;
+  --surface-2:#1B2B35;
+  --ink:#E3EAEE;
+  --ink-soft:#9DB1BC;
+  --line:#2C3F4B;
+  --azul:#6EC0E8;
+  --azul-soft:#173544;
+  --ambar:#E5AC4A;
+  --ambar-soft:#3A2D14;
+  --film:#060D11;
+  --film-ink:#E9EEF0;
+  --focus:#6EC0E8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Spectral",Georgia,"Times New Roman",serif;
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.ui{font-family:"Archivo","Helvetica Neue",Arial,sans-serif}
+a{color:var(--azul)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:2px}
+
+/* ---------- Visor / hero ---------- */
+.visor{
+  background:var(--film);
+  color:var(--film-ink);
+  padding:clamp(18px,4vw,40px);
+}
+.visor-marco{
+  position:relative;
+  max-width:1100px;
+  margin:0 auto;
+  border:1px solid rgba(233,238,240,.28);
+  aspect-ratio:16/8;
+  min-height:330px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:clamp(20px,5vw,60px);
+  overflow:hidden;
+}
+.esquina{position:absolute;width:26px;height:26px;border:2px solid rgba(233,238,240,.7)}
+.esquina.tl{top:12px;left:12px;border-right:0;border-bottom:0}
+.esquina.tr{top:12px;right:12px;border-left:0;border-bottom:0}
+.esquina.bl{bottom:12px;left:12px;border-right:0;border-top:0}
+.esquina.br{bottom:12px;right:12px;border-left:0;border-top:0}
+.hud{
+  position:absolute;left:0;right:0;
+  display:flex;justify-content:space-between;
+  font-family:"Archivo",sans-serif;font-size:12px;letter-spacing:.14em;
+  color:rgba(233,238,240,.62);
+  padding:0 clamp(20px,5vw,60px);
+}
+.hud.arriba{top:26px}
+.hud.abajo{bottom:26px}
+.rec{display:inline-flex;align-items:center;gap:7px}
+.rec b{width:9px;height:9px;border-radius:50%;background:#E0553C;animation:late 2.4s ease-in-out infinite}
+@keyframes late{0%,70%,100%{opacity:1}85%{opacity:.25}}
+.guias{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s ease}
+.visor-marco.guias-on .guias{opacity:1}
+.guias i{position:absolute;background:rgba(110,192,232,.45)}
+.guias i.v1{left:33.33%;top:0;bottom:0;width:1px}
+.guias i.v2{left:66.66%;top:0;bottom:0;width:1px}
+.guias i.h1{top:33.33%;left:0;right:0;height:1px}
+.guias i.h2{top:66.66%;left:0;right:0;height:1px}
+.guias b{position:absolute;width:9px;height:9px;border-radius:50%;background:#6EC0E8;transform:translate(-50%,-50%)}
+h1{
+  font-size:clamp(2rem,6.2vw,4.1rem);
+  line-height:.98;
+  font-weight:800;
+  letter-spacing:-.02em;
+  margin:0 0 .5rem;
+  max-width:16ch;
+}
+.visor p{max-width:46ch;color:rgba(233,238,240,.78);margin:0 0 1.2rem;font-size:1.02rem}
+.visor-acciones{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* ---------- Botones ---------- */
+button{font:inherit;cursor:pointer}
+.btn{
+  font-family:"Archivo",sans-serif;font-size:.86rem;font-weight:600;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  padding:.5rem .9rem;border-radius:2px;
+  transition:background .18s ease,color .18s ease,border-color .18s ease;
+}
+.btn:hover{border-color:var(--azul)}
+.btn[aria-pressed="true"],.btn.activo{background:var(--azul);border-color:var(--azul);color:#fff}
+:root[data-theme="dark"] .btn[aria-pressed="true"],
+:root[data-theme="dark"] .btn.activo{color:#07151D}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .btn[aria-pressed="true"],
+  :root:not([data-theme="light"]) .btn.activo{color:#07151D}
+}
+.btn-visor{border-color:rgba(233,238,240,.45);background:transparent;color:var(--film-ink)}
+.btn-visor:hover{border-color:#6EC0E8}
+.btn-visor[aria-pressed="true"]{background:#6EC0E8;color:#07151D;border-color:#6EC0E8}
+
+/* ---------- Estructura ---------- */
+.envoltorio{max-width:1180px;margin:0 auto;padding:0 clamp(14px,3vw,28px) 90px;display:grid;gap:clamp(20px,4vw,48px)}
+@media (min-width:1000px){.envoltorio{grid-template-columns:210px minmax(0,1fr);align-items:start}}
+
+nav.indice{
+  position:sticky;top:0;z-index:20;
+  background:var(--paper);
+  padding:10px 0;
+  border-bottom:1px solid var(--line);
+}
+@media (min-width:1000px){
+  nav.indice{top:16px;border-bottom:0;padding:24px 0}
+}
+.indice ol{list-style:none;margin:0;padding:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin}
+@media (min-width:1000px){.indice ol{flex-direction:column;overflow:visible;gap:1px}}
+.indice a{
+  display:flex;gap:9px;align-items:baseline;
+  font-family:"Archivo",sans-serif;font-size:.82rem;font-weight:500;
+  color:var(--ink-soft);text-decoration:none;white-space:nowrap;
+  padding:.4rem .55rem;border-left:2px solid transparent;border-radius:2px;
+}
+.indice a:hover{color:var(--ink);background:var(--surface-2)}
+.indice a.activo{color:var(--azul);border-left-color:var(--azul);background:var(--surface-2)}
+.indice a span{font-variant-numeric:tabular-nums;opacity:.6}
+@media (max-width:999px){.indice a{border-left:0;border-bottom:2px solid transparent}.indice a.activo{border-bottom-color:var(--azul)}}
+
+main{min-width:0;display:grid;gap:clamp(34px,6vw,64px);padding-top:clamp(24px,5vw,56px)}
+section{scroll-margin-top:90px}
+h2{
+  font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:800;letter-spacing:-.015em;
+  margin:0 0 .35rem;line-height:1.1;
+}
+h2 .num{
+  display:inline-block;font-size:.82rem;font-weight:600;color:var(--azul);
+  letter-spacing:.08em;margin-right:.6rem;vertical-align:.3em;font-variant-numeric:tabular-nums;
+}
+.entradilla{color:var(--ink-soft);max-width:62ch;margin:.2rem 0 1.4rem;font-size:1.02rem}
+p,li{max-width:70ch}
+h3{font-size:1.06rem;font-weight:600;margin:1.6rem 0 .4rem;letter-spacing:-.005em}
+h4{font-size:.95rem;font-weight:600;margin:0 0 .3rem}
+.sep{border:0;border-top:1px solid var(--line);margin:0}
+
+/* ---------- Fichas ---------- */
+.fichas{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);margin:1.2rem 0}
+@media (min-width:640px){.fichas.dos{grid-template-columns:1fr 1fr}.fichas.tres{grid-template-columns:repeat(3,1fr)}}
+.ficha{background:var(--surface);padding:1rem 1.1rem}
+.ficha p{margin:.25rem 0 0;font-size:.95rem;color:var(--ink-soft);max-width:none}
+.ficha .term{color:var(--azul);font-weight:600}
+
+dl.terminos{margin:1.2rem 0;display:grid;gap:0}
+dl.terminos > div{padding:.85rem 0;border-top:1px solid var(--line)}
+dl.terminos > div:last-child{border-bottom:1px solid var(--line)}
+@media (min-width:700px){dl.terminos > div{display:grid;grid-template-columns:200px 1fr;gap:1.4rem}}
+dt{font-family:"Archivo",sans-serif;font-weight:600;font-size:.95rem}
+dd{margin:0;color:var(--ink-soft);font-size:.97rem}
+dd em{color:var(--ink);font-style:italic}
+
+.nota{
+  border-left:3px solid var(--ambar);
+  background:var(--ambar-soft);
+  padding:.85rem 1rem;margin:1.3rem 0;font-size:.95rem;
+}
+.nota strong{font-family:"Archivo",sans-serif}
+.nota p{margin:0;max-width:none}
+
+/* ---------- Laboratorio (demos) ---------- */
+.lab{border:1px solid var(--line);background:var(--surface);margin:1.5rem 0}
+.lab-cab{
+  display:flex;flex-wrap:wrap;gap:.6rem;justify-content:space-between;align-items:center;
+  padding:.7rem 1rem;border-bottom:1px solid var(--line);background:var(--surface-2);
+}
+.lab-cab h3{margin:0;font-size:.9rem;font-weight:600;letter-spacing:.02em}
+.lab-cab .pista{font-family:"Archivo",sans-serif;font-size:.76rem;color:var(--ink-soft)}
+.lab-cuerpo{padding:1rem}
+.mandos{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.mandos .btn{padding:.38rem .7rem;font-size:.8rem}
+.lab-salida{display:grid;gap:1rem}
+@media (min-width:760px){.lab-salida.lado{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}}
+.lienzo{width:100%;height:auto;display:block;background:var(--surface-2);border:1px solid var(--line)}
+.lectura h4{font-family:"Archivo",sans-serif;font-size:1.02rem;margin-bottom:.35rem}
+.lectura p{margin:.2rem 0 .7rem;font-size:.95rem;color:var(--ink-soft)}
+.lectura .uso{font-size:.9rem;border-top:1px solid var(--line);padding-top:.6rem;color:var(--ink)}
+.lectura .uso b{font-family:"Archivo",sans-serif;font-size:.78rem;color:var(--azul);display:block;margin-bottom:.15rem}
+
+/* transiciones */
+.escenario{position:relative;aspect-ratio:16/9;overflow:hidden;background:#000;border:1px solid var(--line)}
+.plano{position:absolute;inset:0;display:grid;place-items:center;font-family:"Archivo",sans-serif;font-weight:800;font-size:clamp(1.4rem,5vw,2.6rem);color:rgba(255,255,255,.92)}
+.plano.a{background:linear-gradient(140deg,#12506F,#1B7CA8)}
+.plano.b{background:linear-gradient(140deg,#8A5A0E,#D19A2E)}
+.escenario[data-t="corte"] .plano.b{animation:corte 3s steps(1,end) infinite}
+@keyframes corte{0%,45%{opacity:0}46%,100%{opacity:1}}
+.escenario[data-t="fundido"] .plano.b{animation:fundidoB 3.6s ease-in-out infinite}
+.escenario[data-t="fundido"] .plano.a{animation:fundidoA 3.6s ease-in-out infinite}
+@keyframes fundidoA{0%,25%{opacity:1}42%,100%{opacity:0}}
+@keyframes fundidoB{0%,58%{opacity:0}75%,100%{opacity:1}}
+.escenario[data-t="encadenado"] .plano.b{animation:encad 3.4s ease-in-out infinite}
+@keyframes encad{0%,25%{opacity:0}62%,100%{opacity:1}}
+.escenario[data-t="cortinilla"] .plano.b{animation:cortina 3.4s ease-in-out infinite}
+@keyframes cortina{0%,20%{clip-path:inset(0 100% 0 0)}70%,100%{clip-path:inset(0 0 0 0)}}
+.escenario[data-t="barrido"] .plano.b{animation:barrB 3s ease-in-out infinite}
+.escenario[data-t="barrido"] .plano.a{animation:barrA 3s ease-in-out infinite}
+@keyframes barrA{0%,25%{transform:translateX(0);filter:blur(0)}50%{transform:translateX(-120%);filter:blur(14px)}51%,100%{opacity:0;transform:translateX(-120%)}}
+@keyframes barrB{0%,49%{opacity:0;transform:translateX(120%);filter:blur(14px)}50%{opacity:1}75%,100%{opacity:1;transform:translateX(0);filter:blur(0)}}
+.escenario[data-t="desenfoque"] .plano.a{animation:desA 3.4s ease-in-out infinite}
+.escenario[data-t="desenfoque"] .plano.b{animation:desB 3.4s ease-in-out infinite}
+@keyframes desA{0%,20%{filter:blur(0);opacity:1}48%{filter:blur(18px);opacity:1}52%,100%{opacity:0;filter:blur(18px)}}
+@keyframes desB{0%,50%{opacity:0;filter:blur(18px)}54%{opacity:1;filter:blur(18px)}80%,100%{opacity:1;filter:blur(0)}}
+
+/* tabla géneros */
+.tabla{width:100%;border-collapse:collapse;margin:1.1rem 0;font-size:.95rem}
+.tabla th,.tabla td{text-align:left;vertical-align:top;padding:.55rem .7rem;border-bottom:1px solid var(--line)}
+.tabla th{font-family:"Archivo",sans-serif;font-size:.8rem;font-weight:600;color:var(--azul);white-space:nowrap}
+.scroll-x{overflow-x:auto}
+
+/* checklist */
+.checklist{list-style:none;padding:0;margin:1rem 0;display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.checklist li{background:var(--surface);padding:.7rem .9rem;max-width:none}
+.checklist label{display:flex;gap:.7rem;align-items:flex-start;cursor:pointer}
+.checklist input{margin-top:.35rem;accent-color:var(--azul);width:16px;height:16px;flex:0 0 auto}
+.checklist b{font-family:"Archivo",sans-serif;font-weight:600;font-size:.92rem}
+.checklist span{display:block;color:var(--ink-soft);font-size:.9rem}
+.checklist li.hecho b{text-decoration:line-through;opacity:.55}
+
+/* quiz */
+.quiz{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.preg{background:var(--surface);padding:1rem 1.1rem}
+.preg > p{font-weight:500;margin:0 0 .7rem}
+.preg .n{font-family:"Archivo",sans-serif;color:var(--azul);font-weight:600;margin-right:.45rem}
+.ops{display:grid;gap:6px}
+.op{
+  display:flex;gap:.6rem;align-items:flex-start;text-align:left;width:100%;
+  border:1px solid var(--line);background:var(--surface-2);color:var(--ink);
+  padding:.55rem .7rem;border-radius:2px;font-size:.95rem;line-height:1.45;
+  font-family:"Spectral",serif;
+}
+.op:hover:not(:disabled){border-color:var(--azul)}
+.op:disabled{cursor:default}
+.op .letra{font-family:"Archivo",sans-serif;font-weight:600;font-size:.8rem;color:var(--ink-soft);padding-top:.12rem}
+.op.bien{border-color:#2E8B57;background:rgba(46,139,87,.14)}
+.op.mal{border-color:#C1462F;background:rgba(193,70,47,.13)}
+.feedback{margin:.7rem 0 0;font-size:.92rem;color:var(--ink-soft);display:none}
+.feedback.visible{display:block}
+.marcador{
+  display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;justify-content:space-between;
+  background:var(--surface-2);border:1px solid var(--line);border-top:0;padding:.8rem 1.1rem;
+  font-family:"Archivo",sans-serif;font-size:.92rem;
+}
+.marcador output{font-weight:800;font-size:1.3rem;color:var(--azul);font-variant-numeric:tabular-nums}
+
+.videos{list-style:none;padding:0;margin:1.2rem 0;display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.videos li{
+  background:var(--surface);padding:.75rem .95rem;max-width:none;
+  display:flex;flex-wrap:wrap;gap:.3rem 1rem;align-items:baseline;justify-content:space-between;
+}
+.videos a{font-family:"Archivo",sans-serif;font-weight:600;font-size:.95rem;text-decoration:none;border-bottom:1px solid var(--azul)}
+.videos a:hover{background:var(--azul-soft)}
+.videos span{font-family:"Archivo",sans-serif;font-size:.78rem;color:var(--ink-soft)}
+.enlace-video{display:inline-block;margin:.9rem 0 0;font-family:"Archivo",sans-serif;font-size:.86rem;font-weight:600}
+
+footer{
+  border-top:1px solid var(--line);margin-top:10px;padding:1.6rem 0 0;
+  color:var(--ink-soft);font-size:.88rem;
+}
+footer p{max-width:70ch}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+
+<header class="visor">
+  <div class="visor-marco" id="marco">
+    <span class="esquina tl"></span><span class="esquina tr"></span>
+    <span class="esquina bl"></span><span class="esquina br"></span>
+    <div class="guias" aria-hidden="true">
+      <i class="v1"></i><i class="v2"></i><i class="h1"></i><i class="h2"></i>
+      <b style="left:33.33%;top:33.33%"></b><b style="left:66.66%;top:33.33%"></b>
+      <b style="left:33.33%;top:66.66%"></b><b style="left:66.66%;top:66.66%"></b>
+    </div>
+    <div class="hud arriba">
+      <span class="rec"><b></b>REC</span>
+      <span id="tc">00:00:00:00</span>
+    </div>
+    <h1>Recursos expresivos en producciones audiovisuales</h1>
+    <p>Todo plano decide algo por quien mira: desde dónde, cuánto tiempo y qué se queda fuera. Aquí puedes mover esas decisiones y ver qué cambia.</p>
+    <div class="visor-acciones">
+      <button class="btn btn-visor" id="guiasBtn" aria-pressed="false">Mostrar guías de encuadre</button>
+      <button class="btn btn-visor" id="temaBtn">Cambiar a modo oscuro</button>
+    </div>
+    <div class="hud abajo">
+      <span>Imagen y Sonido · 2.º Bachillerato</span>
+      <span>Tema 1</span>
+    </div>
+  </div>
+</header>
+
+<div class="envoltorio">
+  <nav class="indice" aria-label="Índice del tema">
+    <ol>
+      <li><a href="#generos"><span>1</span>Géneros</a></li>
+      <li><a href="#imagen"><span>2</span>La imagen</a></li>
+      <li><a href="#unidades"><span>3</span>Unidades del relato</a></li>
+      <li><a href="#escala"><span>4</span>Escala de planos</a></li>
+      <li><a href="#movimientos"><span>5</span>Movimientos</a></li>
+      <li><a href="#angulacion"><span>6</span>Angulación</a></li>
+      <li><a href="#composicion"><span>7</span>Composición</a></li>
+      <li><a href="#planificacion"><span>8</span>Planificación</a></li>
+      <li><a href="#raccord"><span>9</span>Continuidad</a></li>
+      <li><a href="#transiciones"><span>10</span>Transiciones</a></li>
+      <li><a href="#tiempo"><span>11</span>Tiempo y montaje</a></li>
+      <li><a href="#analisis"><span>12</span>Análisis</a></li>
+      <li><a href="#videos"><span>13</span>Vídeos</a></li>
+      <li><a href="#test"><span>14</span>Autoevaluación</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <!-- 1 -->
+    <section id="generos">
+      <h2><span class="num">01</span>Géneros: el contrato con quien mira</h2>
+      <p class="entradilla">Un género es un conjunto de reglas y convenciones reconocibles, heredadas de la literatura oral y del teatro griego. Emisor y receptor firman un «contrato mediático»: quien ve una película de terror sabe qué se le va a pedir y qué se le va a dar.</p>
+
+      <p>El espectador reconoce el género por dos vías: las evidencias visibles —personajes estereotipados, escenarios, iluminación, ambientes— y el tratamiento de las acciones. La primera gran división es entre <strong>cine documental</strong>, que describe la realidad, y <strong>cine de ficción</strong>, que desarrolla un relato imaginario o una semificción construida sobre un hecho real.</p>
+
+      <h3>Catorce categorías del cine narrativo</h3>
+      <div class="fichas tres">
+        <div class="ficha"><h4 class="term">Documental</h4><p>Informativo antes que dramático, sin intervención sobre la realidad que muestra.</p></div>
+        <div class="ficha"><h4 class="term">Biográfico (biopic)</h4><p>La vida de una persona real con licencias históricas; recrea sus episodios relevantes.</p></div>
+        <div class="ficha"><h4 class="term">Histórico</h4><p>Recrea sucesos conocidos ciñéndose a la realidad, siempre desde un punto de vista ideológico.</p></div>
+        <div class="ficha"><h4 class="term">Musical</h4><p>La expresión musical es parte fundamental del desarrollo dramático.</p></div>
+        <div class="ficha"><h4 class="term">Comedia</h4><p>Busca la carcajada con humor elemental o grotesco; el slapstick de Keaton, Chaplin y Lloyd.</p></div>
+        <div class="ficha"><h4 class="term">Infantil</h4><p>Temática dirigida a niños, con fines didácticos o de entretenimiento.</p></div>
+        <div class="ficha"><h4 class="term">Western</h4><p>Conquista y colonización del oeste de EE. UU. Nace en el cine, no en la literatura ni en el teatro.</p></div>
+        <div class="ficha"><h4 class="term">Aventura y acción</h4><p>Secuencia cautivadora de acciones sin reflexión sobre ellas; entretenimiento ligero.</p></div>
+        <div class="ficha"><h4 class="term">Bélico</h4><p>Hazañas épicas en campo de batalla: guerras del siglo XX, cine épico, cine de romanos.</p></div>
+        <div class="ficha"><h4 class="term">Ciencia ficción</h4><p>Futuro imaginario con mayor desarrollo tecnológico; emparentado con lo fantástico.</p></div>
+        <div class="ficha"><h4 class="term">Drama</h4><p>Más una forma de narrar que un género: giros súbitos y resorte sentimental.</p></div>
+        <div class="ficha"><h4 class="term">Suspense o thriller</h4><p>La información se dosifica: el espectador participa formulando hipótesis.</p></div>
+        <div class="ficha"><h4 class="term">Terror</h4><p>Produce miedo y ansiedad mediante dramas efectistas, truculentos o misteriosos.</p></div>
+        <div class="ficha"><h4 class="term">Animación</h4><p>Da sensación de movimiento a imágenes u objetos mediante mínimos cambios de posición.</p></div>
+      </div>
+
+      <p class="enlace-video">Vídeo: <a href="https://www.youtube.com/watch?v=sqHvlrgxY5Q&amp;list=PL8971D084030AB12D" target="_blank" rel="noopener">serie de TCM sobre los géneros cinematográficos</a></p>
+
+      <h3>Más allá de la sala de cine</h3>
+      <div class="scroll-x">
+        <table class="tabla">
+          <thead>
+            <tr><th>Familia</th><th>Formatos</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Videográficos</strong><br><span style="color:var(--ink-soft);font-size:.88rem">No se conciben para proyectarse en cine; producción más barata.</span></td>
+                <td>Videoarte (Nam June Paik) · Videodanza (Merce Cunningham) · Videoperformance (Ulrike Rosenbach) · Videoinstalación (Antoni Muntadas) · Videoclip (<em>Bohemian Rhapsody</em>, Queen)</td></tr>
+            <tr><td><strong>Televisivos</strong></td>
+                <td>Informativos (telediario, reportaje, entrevista, el tiempo) · Culturales y divulgativos · Deportes · Ficción (series, telenovelas, TV movies) · Entretenimiento (magazines, galas, concursos, talk-shows, reality-shows)</td></tr>
+            <tr><td><strong>Multimedia y new media</strong><br><span style="color:var(--ink-soft);font-size:.88rem">Ordenador que combina texto, gráficos, audio y vídeo con enlaces navegables.</span></td>
+                <td>Artístico · Informativo · Entretenimiento · Educativo · Publicitario. Soportes: web, apps, videoconsolas, realidad virtual y aumentada, videomapping, veejing</td></tr>
+            <tr><td><strong>Videojuegos</strong></td>
+                <td>Acción (lucha, arcade, plataformas) · Disparos (shoot 'em up, FPS, galería de tiro) · Estrategia (tiempo real, por turnos) · Simulación (vehículos, construcción, vida, combate) · Deportes · Aventura (conversacional, gráfica) · Rol (táctico, de acción, MMORPG) · Educativos</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 2 -->
+    <section id="imagen">
+      <h2><span class="num">02</span>Cómo significa una imagen</h2>
+      <p class="entradilla">Antes de encuadrar conviene saber qué palancas tiene una imagen. Suelen presentarse como parejas de opuestos, y casi nunca se elige un extremo puro: se gradúa.</p>
+
+      <dl class="terminos">
+        <div><dt>Iconicidad / abstracción</dt><dd>La imagen icónica refleja la realidad exterior con mayor o menor fidelidad; la abstracción crea una realidad propia, imaginada o de relaciones arbitrarias.</dd></div>
+        <div><dt>Originalidad / redundancia</dt><dd>La imagen original sorprende y pide una complicidad extra al receptor; la redundante se apoya en convenciones ya asumidas.</dd></div>
+        <div><dt>Monosemia / polisemia</dt><dd>La imagen monosémica tiene un solo significado y no cuesta comprenderla; la polisémica usa la ambigüedad para hacer pensar.</dd></div>
+        <div><dt>Sencillez / complejidad</dt><dd>Depende de la cantidad de elementos, su estructura y su composición. Con más de cuatro elementos distintos la imagen ya se lee como compleja.</dd></div>
+        <div><dt>Denotación / connotación</dt><dd>La lectura denotativa es lo que vemos, con todos los elementos del mensaje. La connotativa es lo que nos sugiere: habitualmente, emociones.</dd></div>
+      </dl>
+
+      <div class="nota"><p><strong>Para practicar en clase:</strong> coge cualquier cartel de la cartelera actual y sitúalo en estas cinco parejas. Si dos personas lo sitúan en lugares distintos, esa diferencia ya es el análisis.</p></div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 3 -->
+    <section id="unidades">
+      <h2><span class="num">03</span>Toma, plano, escena, secuencia</h2>
+      <p class="entradilla">Las unidades con las que se fragmenta el espacio escénico. Se confunden con facilidad porque tres de ellas pueden coincidir en la misma imagen.</p>
+
+      <dl class="terminos">
+        <div><dt>Toma</dt><dd>Lo que se graba desde que se pulsa el botón de grabación hasta que se vuelve a pulsar. Es una unidad de <em>rodaje</em>.</dd></div>
+        <div><dt>Plano</dt><dd>El fragmento espacial con una duración determinada que seleccionamos de una toma y usamos en el montaje final. Es una unidad de <em>montaje</em>.</dd></div>
+        <div><dt>Escena</dt><dd>Unidad de tiempo y acción recogida en el guion; transcurre en un mismo espacio y un mismo tiempo, y puede resolverse con uno o varios planos. Ejemplo de cabecera: <em>Parque de atracciones. Exterior. Noche.</em></dd></div>
+        <div><dt>Secuencia</dt><dd>Una o varias escenas con unidad de acción, ritmo propio y contenido en sí misma. El tiempo fílmico y el real no tienen por qué coincidir.</dd></div>
+        <div><dt>Plano secuencia</dt><dd>Tiene la unidad de sentido de una secuencia, pero sin fragmentación: la cámara la resuelve entera en una sola toma.</dd></div>
+      </dl>
+
+      <p>El <strong>encuadre</strong> es el límite físico de la imagen, lo que presenta la pantalla. En él intervienen la posición de la cámara, las características de la fotografía, el movimiento, la perspectiva, la profundidad de campo y los efectos de composición.</p>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 4 -->
+    <section id="escala">
+      <h2><span class="num">04</span>Escala de planos</h2>
+      <p class="entradilla">Los planos se catalogan según cómo queda representada la figura humana. Cuanto más cerca, menos información del entorno y más implicación emocional: la escala es una decisión narrativa, no solo de tamaño.</p>
+
+      <div class="lab">
+        <div class="lab-cab">
+          <h3>Recorta el encuadre</h3>
+          <span class="pista">Elige una escala y observa qué desaparece del cuadro</span>
+        </div>
+        <div class="lab-cuerpo">
+          <div class="mandos" id="mandosEscala" role="group" aria-label="Escalas de plano"></div>
+          <div class="lab-salida lado">
+            <svg class="lienzo" viewBox="0 0 400 260" role="img" aria-labelledby="escalaTit">
+              <title id="escalaTit">Figura humana en un escenario con el encuadre seleccionado</title>
+              <defs>
+                <mask id="recorte">
+                  <rect x="0" y="0" width="400" height="260" fill="#fff" opacity="0.82"/>
+                  <rect id="agujero" x="0" y="0" width="400" height="260" fill="#000"/>
+                </mask>
+              </defs>
+              <rect x="0" y="0" width="400" height="260" fill="#9FC6DC"/>
+              <circle cx="330" cy="46" r="18" fill="#F2D9A0"/>
+              <rect x="0" y="196" width="400" height="64" fill="#7E9A6E"/>
+              <rect x="30" y="118" width="54" height="78" fill="#5C6E7A"/>
+              <rect x="40" y="130" width="12" height="14" fill="#C8DCE8"/><rect x="62" y="130" width="12" height="14" fill="#C8DCE8"/>
+              <rect x="40" y="156" width="12" height="14" fill="#C8DCE8"/><rect x="62" y="156" width="12" height="14" fill="#C8DCE8"/>
+              <rect x="316" y="140" width="10" height="56" fill="#6B5240"/>
+              <circle cx="321" cy="130" r="26" fill="#5C7E52"/>
+              <!-- figura -->
+              <g>
+                <rect x="190" y="150" width="9" height="82" fill="#33424C"/>
+                <rect x="203" y="150" width="9" height="82" fill="#33424C"/>
+                <rect x="186" y="96" width="30" height="58" rx="5" fill="#B8452F"/>
+                <rect x="175" y="100" width="10" height="44" rx="5" fill="#B8452F"/>
+                <rect x="217" y="100" width="10" height="44" rx="5" fill="#B8452F"/>
+                <circle cx="181" cy="150" r="6" fill="#E8C9A8"/>
+                <circle cx="221" cy="150" r="6" fill="#E8C9A8"/>
+                <rect x="194" y="84" width="14" height="14" fill="#E8C9A8"/>
+                <circle cx="201" cy="76" r="15" fill="#E8C9A8"/>
+                <path d="M186 72 a15 15 0 0 1 30 0 q-15 -9 -30 0z" fill="#3A2C22"/>
+                <circle cx="195" cy="76" r="2" fill="#2A2018"/>
+                <circle cx="207" cy="76" r="2" fill="#2A2018"/>
+                <path d="M196 84 q5 4 10 0" stroke="#A8705C" stroke-width="1.6" fill="none"/>
+              </g>
+              <rect x="0" y="0" width="400" height="260" fill="#0C1A22" mask="url(#recorte)"/>
+              <rect id="marcoEscala" x="0" y="0" width="400" height="260" fill="none" stroke="#6EC0E8" stroke-width="2"/>
+            </svg>
+            <div class="lectura">
+              <h4 id="escalaNombre">Gran plano general (GPG)</h4>
+              <p id="escalaDesc">El personaje queda diluido en un entorno que lo supera. Describe el lugar y sitúa la acción antes de entrar en ella.</p>
+              <p class="uso"><b>Para qué sirve</b><span id="escalaUso">Abrir una secuencia, establecer geografía, subrayar la pequeñez del personaje.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p>Se distinguen <strong>planos descriptivos</strong> —los más abiertos, que informan del espacio— y <strong>planos expresivos</strong> —los más cerrados, que informan del estado interior—. Cambiar de uno a otro sin escalones intermedios produce un salto brusco: lo veremos en el apartado de continuidad.</p>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 5 -->
+    <section id="movimientos">
+      <h2><span class="num">05</span>Movimientos de cámara</h2>
+      <p class="entradilla">Hay dos familias: la cámara gira sobre su eje o la cámara se desplaza. Confundirlas es el error más frecuente, porque el zoom parece movimiento y no lo es.</p>
+
+      <dl class="terminos">
+        <div><dt>Paneo (pan shot)</dt><dd>Rotación sobre su eje sin traslación. Puede ser horizontal, vertical (<em>tilt</em>), oblicuo o circular de 360.º Según su función es descriptivo, de seguimiento o de relación.</dd></div>
+        <div><dt>Barrido (zip pan)</dt><dd>Paneo muy veloz. Funciona como transición: cambia de lugar a los personajes o relaciona sujetos aislados entre sí.</dd></div>
+        <div><dt>Travelling</dt><dd>Desplazamiento físico de la cámara en el espacio: acerca, aleja o acompaña la trayectoria del sujeto. Suele hacerse con <em>dolly</em>, a menudo sobre raíles.</dd></div>
+        <div><dt>Zoom</dt><dd>Desplazamiento de las lentes dentro del rango focal, sin que la cámara se mueva. <em>Zoom in</em>: de angular a tele. <em>Zoom out</em>: de tele a angular. No es un travelling.</dd></div>
+        <div><dt>Dolly-zoom</dt><dd>Travelling frontal combinado con zoom en sentido contrario, manteniendo al sujeto del mismo tamaño en el cuadro. Hitchcock lo usó en <em>Vértigo</em>.</dd></div>
+        <div><dt>Grúa (crane shot)</dt><dd>Permite subir o bajar respecto a la línea de horizonte combinando travelling y paneo, con gran expresividad en una sola toma.</dd></div>
+        <div><dt>Cámara al hombro</dt><dd>Subraya la inestabilidad del pulso humano. La steadycam hace lo contrario: imita el travelling atenuando el temblor.</dd></div>
+      </dl>
+
+      <div class="nota"><p><strong>Tecnología actual:</strong> globos de helio y dirigibles, cámaras en mini-helicópteros y drones, que dan imágenes muy estables y a veces se controlan desde el móvil.</p></div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 6 -->
+    <section id="angulacion">
+      <h2><span class="num">06</span>Angulación, campo y fuera de campo</h2>
+      <p class="entradilla">La altura de la cámara respecto a la acción no es neutra: decide si el espectador mira desde fuera o queda implicado emocionalmente.</p>
+
+      <div class="lab">
+        <div class="lab-cab">
+          <h3>Mueve la cámara en el arco</h3>
+          <span class="pista">Cada posición implica al espectador de una forma distinta</span>
+        </div>
+        <div class="lab-cuerpo">
+          <div class="mandos" id="mandosAngulo" role="group" aria-label="Ángulos de cámara"></div>
+          <div class="lab-salida lado">
+            <svg class="lienzo" viewBox="0 0 380 260" role="img" aria-labelledby="angTit">
+              <title id="angTit">Arco de posiciones de cámara respecto a un personaje</title>
+              <line x1="40" y1="238" x2="340" y2="238" stroke="currentColor" opacity=".25" stroke-width="1.5"/>
+              <path d="M96 244 A 112 112 0 0 1 96 20" fill="none" stroke="currentColor" opacity=".22" stroke-width="1.5" stroke-dasharray="4 5"/>
+              <!-- personaje de perfil -->
+              <g transform="translate(96,150)">
+                <rect x="-6" y="42" width="8" height="46" fill="#33424C"/>
+                <rect x="4" y="42" width="8" height="46" fill="#33424C"/>
+                <rect x="-8" y="-2" width="24" height="46" rx="5" fill="#B8452F"/>
+                <circle cx="4" cy="-16" r="13" fill="#E8C9A8"/>
+                <path d="M-9 -20 a13 13 0 0 1 26 0 q-13 -8 -26 0z" fill="#3A2C22"/>
+                <circle cx="11" cy="-16" r="2" fill="#2A2018"/>
+              </g>
+              <line id="rayo" x1="300" y1="130" x2="110" y2="134" stroke="#6EC0E8" stroke-width="1.5" stroke-dasharray="5 4"/>
+              <g id="camara" transform="translate(300,130)">
+                <rect x="-16" y="-11" width="30" height="22" rx="3" fill="#15719F"/>
+                <path d="M14 -6 l12 -7 v26 l-12 -7z" fill="#15719F"/>
+                <circle cx="-4" cy="-16" r="6" fill="#15719F"/>
+              </g>
+              <text x="342" y="134" font-family="Archivo, sans-serif" font-size="11" fill="currentColor" opacity=".55" id="etiquetaAng">Normal</text>
+            </svg>
+            <div class="lectura">
+              <h4 id="angNombre">Normal</h4>
+              <p id="angDesc">La acción se sitúa a la altura de los ojos. Es un ángulo informativo: cuenta lo que ocurre sin cargarlo de intención.</p>
+              <p class="uso"><b>Efecto en el espectador</b><span id="angUso">Neutralidad. Mira como si estuviera presente en la escena.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p>Hay un ángulo que no depende de la altura sino de la inclinación: el <strong>aberrante u holandés</strong>, con la cámara girada unos 45.º Comunica inestabilidad y da dinamismo; el cine de terror lo usa con frecuencia.</p>
+
+      <div class="fichas dos">
+        <div class="ficha"><h4 class="term">Campo</h4><p>Todo lo que se muestra dentro de los bordes de la imagen.</p></div>
+        <div class="ficha"><h4 class="term">Fuera de campo</h4><p>Elementos espaciales y sonoros que se suponen en la escena pero no se ven: espacio en off y sonido en off. Sugerir sin mostrar obliga al espectador a imaginar y le hace participar en la narración.</p></div>
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 7 -->
+    <section id="composicion">
+      <h2><span class="num">07</span>Composición dentro del plano</h2>
+      <p class="entradilla">La composición audiovisual parte de los principios de la imagen fotográfica, con un añadido: los elementos pueden moverse y el encuadre también.</p>
+
+      <div class="lab">
+        <div class="lab-cab">
+          <h3>Aire y regla de los tercios</h3>
+          <span class="pista">Compara los dos encuadres con la retícula activada</span>
+        </div>
+        <div class="lab-cuerpo">
+          <div class="mandos">
+            <button class="btn" id="terciosBtn" aria-pressed="false">Mostrar retícula y puntos fuertes</button>
+            <button class="btn" id="aireBtn" aria-pressed="false">Ver encuadre incorrecto</button>
+          </div>
+          <svg class="lienzo" viewBox="0 0 400 225" role="img" aria-labelledby="compTit">
+            <title id="compTit">Personaje encuadrado con aire en la dirección de su mirada</title>
+            <rect x="0" y="0" width="400" height="225" fill="#B9D3E0"/>
+            <rect x="0" y="170" width="400" height="55" fill="#8AA47C"/>
+            <g id="sujeto" transform="translate(0,0)">
+              <rect x="96" y="120" width="10" height="62" fill="#33424C"/>
+              <rect x="112" y="120" width="10" height="62" fill="#33424C"/>
+              <rect x="90" y="64" width="38" height="60" rx="6" fill="#1F6F97"/>
+              <circle cx="115" cy="46" r="18" fill="#E8C9A8"/>
+              <path d="M97 42 a18 18 0 0 1 36 0 q-18 -11 -36 0z" fill="#3A2C22"/>
+              <circle cx="122" cy="46" r="2.4" fill="#2A2018"/>
+              <circle cx="112" cy="46" r="2.4" fill="#2A2018"/>
+              <path d="M133 46 l26 -3" stroke="#B8452F" stroke-width="1.6" stroke-dasharray="4 4" opacity=".8"/>
+            </g>
+            <g id="reticula" opacity="0">
+              <line x1="133.3" y1="0" x2="133.3" y2="225" stroke="#0C1A22" stroke-width="1" opacity=".45"/>
+              <line x1="266.6" y1="0" x2="266.6" y2="225" stroke="#0C1A22" stroke-width="1" opacity=".45"/>
+              <line x1="0" y1="75" x2="400" y2="75" stroke="#0C1A22" stroke-width="1" opacity=".45"/>
+              <line x1="0" y1="150" x2="400" y2="150" stroke="#0C1A22" stroke-width="1" opacity=".45"/>
+              <circle cx="133.3" cy="75" r="5" fill="#B8452F"/>
+              <circle cx="266.6" cy="75" r="5" fill="#B8452F"/>
+              <circle cx="133.3" cy="150" r="5" fill="#B8452F"/>
+              <circle cx="266.6" cy="150" r="5" fill="#B8452F"/>
+            </g>
+          </svg>
+          <p style="margin:.8rem 0 0;font-size:.95rem;color:var(--ink-soft)" id="compTexto">El personaje se apoya en la vertical izquierda y su cabeza cae cerca de un punto fuerte. El espacio vacío queda en la dirección de la mirada.</p>
+        </div>
+      </div>
+
+      <h3>Normas generales</h3>
+      <ul>
+        <li>Aprovechar el encuadre y cuidar el <strong>aire</strong> sobre las cabezas: cuanto más cerrado es el plano, menor debe ser ese espacio.</li>
+        <li>El espacio vacío se deja en la dirección hacia donde mira el personaje.</li>
+        <li>Una figura en movimiento no se centra: el espacio sobrante se sitúa en la dirección hacia la que se desplaza.</li>
+        <li>La <strong>regla de los tercios</strong> divide el encuadre con dos verticales y dos horizontales; sus intersecciones son los puntos fuertes donde conviene colocar lo principal.</li>
+        <li>La <strong>profundidad de campo</strong> mantiene nítidos a la vez los objetos de primer término y los más alejados.</li>
+      </ul>
+
+      <h3>El encuadre afecta a la imagen en cuatro aspectos</h3>
+      <div class="fichas dos">
+        <div class="ficha"><h4 class="term">Tamaño y forma</h4><p>Las dimensiones y proporciones de la imagen.</p></div>
+        <div class="ficha"><h4 class="term">Campo y fuera de campo</h4><p>Cómo el encuadre define qué queda dentro y qué fuera.</p></div>
+        <div class="ficha"><h4 class="term">Punto de vista</h4><p>Cómo controla la distancia, el ángulo y la altura desde donde se mira.</p></div>
+        <div class="ficha"><h4 class="term">Movimiento</h4><p>Cómo el encuadre puede desplazarse en relación con la puesta en escena.</p></div>
+      </div>
+
+      <p><strong>Proporción de aspecto:</strong> la relación entre ancho y alto del fotograma. Las más habituales son 2.39:1 y 1.85:1 en cine, y 16:9 en televisión, donde el 4:3 quedó obsoleto.</p>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 8 -->
+    <section id="planificacion">
+      <h2><span class="num">08</span>Planificar antes de rodar</h2>
+      <p class="entradilla">El director controla la puesta en escena: «escenifica el hecho para la cámara». Cuanto más se decide sobre el papel, menos sorpresas caras aparecen en el rodaje.</p>
+
+      <dl class="terminos">
+        <div><dt>Planta escenográfica</dt><dd>Representación a vista de pájaro de las posiciones y movimientos de actores y cámara en cada escenario. La necesita el director, pero también todo el equipo técnico para entender las secuencias.</dd></div>
+        <div><dt>Storyboard</dt><dd>A partir del guion técnico, dibuja qué ocurrirá, dónde y cómo. Ayuda a que el equipo comprenda el trabajo y sirve para interesar a posibles colaboradores.</dd></div>
+        <div><dt>Desglose</dt><dd>Secuencia por secuencia, establece las necesidades artísticas, materiales, técnicas y de reparto: decorados, vestuario, maquillaje, iluminación.</dd></div>
+        <div><dt>Plan de rodaje</dt><dd>Organiza los días de rodaje agrupando secuencias que comparten elementos para ahorrar desplazamientos y costes. Indica equipo, actores, días y número de planos por jornada.</dd></div>
+        <div><dt>Presupuesto</dt><dd>Evalúa el coste total de la producción.</dd></div>
+      </dl>
+
+      <p>Respecto a la cámara, en cada plano hay tres decisiones encadenadas: la distancia al objeto, la óptica empleada y el punto de vista.</p>
+
+      <h3>El plano máster</h3>
+      <p>Es la secuencia rodada en un solo plano —normalmente un plano general— que presenta la continuidad completa de la acción y luego se enriquece con insertos de planos medios, americanos o detalles. Ahorra tiempo y garantiza que siempre haya material con el que resolver el montaje.</p>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 9 -->
+    <section id="raccord">
+      <h2><span class="num">09</span>Continuidad: el raccord</h2>
+      <p class="entradilla">La continuidad o raccord es la relación entre planos que impide que se rompa la ilusión de secuencia. Cada plano se relaciona con el anterior y sirve de base al siguiente. Quien lo vigila en rodaje es el <strong>script o continuista</strong>.</p>
+
+      <div class="lab">
+        <div class="lab-cab">
+          <h3>La ley del eje (180.º)</h3>
+          <span class="pista">Cambia el lado de la cámara 2 y mira el resultado montado</span>
+        </div>
+        <div class="lab-cuerpo">
+          <div class="mandos">
+            <button class="btn activo" id="ejeOk" aria-pressed="true">Cámaras del mismo lado</button>
+            <button class="btn" id="ejeKo" aria-pressed="false">Cruzar el eje</button>
+          </div>
+          <div class="lab-salida lado">
+            <svg class="lienzo" viewBox="0 0 380 240" role="img" aria-labelledby="ejeTit">
+              <title id="ejeTit">Vista cenital de dos personajes y dos posiciones de cámara respecto al eje de acción</title>
+              <line x1="20" y1="80" x2="360" y2="80" stroke="#15719F" stroke-width="3"/>
+              <text x="160" y="68" font-family="Archivo, sans-serif" font-size="12" fill="#15719F">eje de acción</text>
+              <circle cx="120" cy="80" r="22" fill="none" stroke="currentColor" stroke-width="2.5"/>
+              <circle cx="260" cy="80" r="22" fill="none" stroke="currentColor" stroke-width="2.5"/>
+              <text x="98" y="40" font-family="Archivo, sans-serif" font-size="12" fill="currentColor">Personaje A</text>
+              <text x="238" y="40" font-family="Archivo, sans-serif" font-size="12" fill="currentColor">Personaje B</text>
+              <g id="cam1" transform="translate(120,175)">
+                <rect x="-17" y="-12" width="30" height="24" rx="3" fill="#15719F"/>
+                <path d="M13 -7 l12 -6 v26 l-12 -6z" fill="#15719F"/>
+                <text x="-14" y="30" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">cámara 1</text>
+              </g>
+              <g id="cam2" transform="translate(260,175)">
+                <rect x="-17" y="-12" width="30" height="24" rx="3" fill="#B5720C"/>
+                <path d="M13 -7 l12 -6 v26 l-12 -6z" fill="#B5720C"/>
+                <text x="-14" y="30" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">cámara 2</text>
+              </g>
+            </svg>
+            <div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <svg viewBox="0 0 120 80" class="lienzo" role="img" aria-label="Plano del personaje A">
+                  <rect width="120" height="80" fill="#17384A"/>
+                  <circle cx="60" cy="42" r="22" fill="#E8C9A8"/>
+                  <path d="M38 38 a22 22 0 0 1 44 0 q-22 -13 -44 0z" fill="#6B3F2A"/>
+                  <g id="ojosA"><circle cx="68" cy="42" r="3" fill="#2A2018"/><circle cx="54" cy="42" r="3" fill="#2A2018"/></g>
+                  <text x="6" y="73" font-family="Archivo, sans-serif" font-size="9" fill="#E9EEF0">A</text>
+                </svg>
+                <svg viewBox="0 0 120 80" class="lienzo" role="img" aria-label="Contraplano del personaje B">
+                  <rect width="120" height="80" fill="#17384A"/>
+                  <circle cx="60" cy="42" r="22" fill="#D9B48F"/>
+                  <path d="M38 38 a22 22 0 0 1 44 0 q-22 -13 -44 0z" fill="#2E2620"/>
+                  <g id="ojosB"><circle cx="52" cy="42" r="3" fill="#2A2018"/><circle cx="66" cy="42" r="3" fill="#2A2018"/></g>
+                  <text x="6" y="73" font-family="Archivo, sans-serif" font-size="9" fill="#E9EEF0">B</text>
+                </svg>
+              </div>
+              <p style="margin:.7rem 0 0;font-size:.95rem;color:var(--ink-soft)" id="ejeTexto">Ambas cámaras están en la misma mitad del escenario. Al montar plano y contraplano, las miradas se corresponden y el espectador entiende que A y B hablan entre sí.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Tipos de continuidad</h3>
+      <dl class="terminos">
+        <div><dt>Narrativa y perceptiva</dt><dd>La narrativa va desde grabar la escena entera hasta la gran elipsis con cortes significativos que el espectador rellena. La perceptiva va de la unidad de espacio y tiempo a su disgregación en escenarios y tiempos distintos, como los flashbacks.</dd></div>
+        <div><dt>En la escala</dt><dd>Entre dos planos del mismo motivo el salto debe ser proporcional, evitando escalas sucesivas: de plano americano a plano medio, no de gran plano general a primerísimo primer plano.</dd></div>
+        <div><dt>En el ángulo</dt><dd>El cambio también ha de ser proporcional. Una variación mínima se percibe como ruido; pasar de un picado pronunciado a un contrapicado fuerte impide relacionar los planos.</dd></div>
+        <div><dt>Regla de los 30.º</dt><dd>Al desplazar la cámara para un nuevo plano del mismo sujeto, un cambio inferior a 30.º es innecesario y se percibe como ruido.</dd></div>
+        <div><dt>Regla de los 180.º</dt><dd>Cruzar el eje produce un <em>salto de eje</em>: distorsiona la posición y el movimiento relativo de los elementos de la composición.</dd></div>
+        <div><dt>De movimiento</dt><dd>Los desplazamientos se piensan respecto a los lados de la pantalla: dos personajes que van al encuentro se mueven hacia lados distintos; quien persigue a otro se mueve hacia el mismo lado.</dd></div>
+        <div><dt>Correspondencia de miradas</dt><dd>Los ejes de mirada deben corresponderse aunque los actores no hayan coincidido en rodaje: es el montaje el que crea la relación.</dd></div>
+        <div><dt>En el tiempo</dt><dd>Como los planos se agrupan por escenarios y actores, aparecen errores en objetos, ropa, peinados o maquillaje entre planos de una misma escena.</dd></div>
+        <div><dt>En la óptica</dt><dd>Dentro de una escena conviene conservar la distancia focal: si cambia, cambian las dimensiones y proporciones del espacio.</dd></div>
+        <div><dt>En la iluminación</dt><dd>Sin cambios repentinos de tonalidad dentro del mismo espacio y secuencia.</dd></div>
+      </dl>
+
+      <p class="enlace-video">Vídeos: <a href="https://www.youtube.com/watch?v=JL2RigaAt7M" target="_blank" rel="noopener">errores de raccord (1)</a> · <a href="https://youtu.be/VeJiy46ivws" target="_blank" rel="noopener">errores de raccord (2)</a></p>
+
+      <div class="nota"><p><strong>Saltar el eje a propósito:</strong> se hace para sobresaltar o inquietar al espectador. Deja de ser un error cuando responde a un criterio narrativo o artístico deliberado.</p></div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 10 -->
+    <section id="transiciones">
+      <h2><span class="num">10</span>Transiciones: la puntuación del cine</h2>
+      <p class="entradilla">Para separar partes y secuencias el cineasta recurre a elementos de paso que funcionan como signos de puntuación. La inmensa mayoría de los planos se unen al corte; el resto son excepciones con intención.</p>
+
+      <div class="lab">
+        <div class="lab-cab">
+          <h3>Ve cada transición</h3>
+          <span class="pista">El plano azul es el saliente; el ámbar, el entrante</span>
+        </div>
+        <div class="lab-cuerpo">
+          <div class="mandos" id="mandosTrans" role="group" aria-label="Tipos de transición"></div>
+          <div class="lab-salida lado">
+            <div class="escenario" id="escenario" data-t="corte">
+              <div class="plano a">A</div>
+              <div class="plano b">B</div>
+            </div>
+            <div class="lectura">
+              <h4 id="transNombre">El corte</h4>
+              <p id="transDesc">Paso de un plano a otro sin ningún tipo de puntuación: acaba uno y empieza el siguiente. Acelera el ritmo cuando no es necesario mostrarlo todo.</p>
+              <p class="uso"><b>Ejemplo</b><span id="transEj">La escena del asesinato en <em>Psicosis</em>: setenta posiciones de cámara y múltiples cortes para cuarenta y cinco segundos que Hitchcock tardó siete días en rodar.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="enlace-video">Vídeos: <a href="https://www.youtube.com/watch?v=RjUZ9_LHdlM" target="_blank" rel="noopener">cinco tipos de corte</a> · <a href="https://youtu.be/n9uUJQRzh4k" target="_blank" rel="noopener">cortinillas</a> · <a href="https://youtu.be/Sl60nEiw2RA" target="_blank" rel="noopener">barrido</a></p>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 11 -->
+    <section id="tiempo">
+      <h2><span class="num">11</span>Tiempo y montaje</h2>
+      <p class="entradilla">El tiempo de las imágenes en movimiento es una creación: se modifica con el ritmo y la dirección. Montar es escoger, ordenar y unir planos según una idea.</p>
+
+      <h3>Articular el espacio-tiempo</h3>
+      <dl class="terminos">
+        <div><dt>Adecuación</dt><dd>La imagen reproduce el tiempo real sin modificarlo: un plano grabado y reproducido a la misma velocidad. Con más de un plano es muy poco frecuente. <em>La soga</em> (Hitchcock, 1948) narra en 80 minutos lo que ocurre entre las 19:30 y las 21:15, sin cortes aparentes.</dd></div>
+        <div><dt>Alargamiento</dt><dd>De forma mecánica con cámara lenta —grabando a más velocidad de la de proyección— o mediante el montaje, repitiendo la acción desde distintos planos. La escalinata de Odesa en <em>El acorazado Potemkin</em> es el ejemplo clásico.</dd></div>
+        <div><dt>Condensación</dt><dd>De forma mecánica con aceleración —grabando a menos velocidad—, habitual en documentales de naturaleza; o mediante la <em>elipsis</em>, suprimiendo lo que no interesa al desarrollo de la historia.</dd></div>
+        <div><dt>Continuidad</dt><dd>El tiempo discurre en el mismo orden que el real.</dd></div>
+        <div><dt>Paralelismo</dt><dd>Se alternan situaciones distintas que suceden a la vez; frecuente en cine policiaco y de suspense.</dd></div>
+        <div><dt>Flash-back y flash-forward</dt><dd>Salto atrás y salto adelante en el tiempo. El segundo es poco frecuente. <em>El crepúsculo de los dioses</em> arranca con un flash-back imposible: recuerda un muerto.</dd></div>
+      </dl>
+
+      <p class="enlace-video">Vídeos: <a href="https://www.youtube.com/watch?v=a9-0tuNwdww" target="_blank" rel="noopener">la elipsis en el cine</a> · <a href="https://www.youtube.com/watch?v=VxvEo7pGi0o" target="_blank" rel="noopener">flash-back y flash-forward</a></p>
+
+      <h3>Funciones del montaje</h3>
+      <div class="fichas dos">
+        <div class="ficha"><h4 class="term">Crear nuevos espacios</h4><p>Vincula objetos, lugares o personas que inicialmente no tienen relación.</p></div>
+        <div class="ficha"><h4 class="term">Manipular el tiempo</h4><p>Mediante elipsis o cambios de dirección temporal.</p></div>
+        <div class="ficha"><h4 class="term">Dar sentido narrativo</h4><p>Pone unas imágenes en relación con otras.</p></div>
+        <div class="ficha"><h4 class="term">Crear relaciones poéticas e ideológicas</h4><p>Por analogía, por contraste o por causa-efecto.</p></div>
+      </div>
+      <p>También fija el <strong>ritmo</strong>: el ritmo fuerte se apoya en planos de corta duración, planos cortos, gran angular, movimientos de cámara rápidos y música y efectos de fuerte volumen.</p>
+
+      <h3>Principales tipos de montaje</h3>
+      <div class="scroll-x">
+        <table class="tabla">
+          <thead><tr><th>Criterio</th><th>Tipo</th><th>En qué consiste</th></tr></thead>
+          <tbody>
+            <tr><td>Escala y duración</td><td>Analítico</td><td>Planos cortos: analiza la realidad parte por parte.</td></tr>
+            <tr><td>Escala y duración</td><td>Sintético</td><td>Planos generales largos: la mirada del espectador recorre la pantalla.</td></tr>
+            <tr><td>Tratamiento del tiempo</td><td>En paralelo</td><td>Dos o más acciones en espacios y momentos diferentes.</td></tr>
+            <tr><td>Tratamiento del tiempo</td><td>Alterno</td><td>Dos acciones en distinto lugar pero al mismo tiempo.</td></tr>
+            <tr><td>Tratamiento del tiempo</td><td>Invertido</td><td>Flash-back: la película empieza por el final del personaje.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 12 -->
+    <section id="analisis">
+      <h2><span class="num">12</span>Cómo analizar un producto audiovisual</h2>
+      <p class="entradilla">Un método en cuatro fases. Marca lo que ya tengas resuelto de tu análisis; la lista se guarda solo mientras esta página esté abierta.</p>
+
+      <h3>1. Fase previa</h3>
+      <ul class="checklist" data-lista="previa">
+        <li><label><input type="checkbox"><span><b>Información documental</b><span>Condiciones de producción, situación contextual en el estreno y recepción hasta hoy.</span></span></label></li>
+        <li><label><input type="checkbox"><span><b>Découpage</b><span>Plano a plano, describiendo cada uno o capturando fotogramas. Para audiovisual es más aconsejable capturar.</span></span></label></li>
+        <li><label><input type="checkbox"><span><b>Principios ordenadores</b><span>¿Se inscribe en un modelo de representación, en un género, en un contexto de producción o formato concretos?</span></span></label></li>
+        <li><label><input type="checkbox"><span><b>Objetivo del análisis</b><span>Uso institucional, docente o divulgativo, y posición del analista.</span></span></label></li>
+      </ul>
+
+      <p><strong>Qué anotar en el découpage:</strong> numeración y duración del plano, elementos visuales y composición, escala, incidencia angular, profundidad de campo y óptica, movimientos en campo y de cámara, raccords y pasos entre planos, banda sonora (diálogos, ruidos, música, intensidad, transiciones) y relación sonido-imagen: sonidos in, off y over, diegéticos o no, sincronismo o asincronismo.</p>
+
+      <h3>2. Fase descriptiva</h3>
+      <ul class="checklist" data-lista="descriptiva">
+        <li><label><input type="checkbox"><span><b>Instrumentos de análisis</b><span>Segmentación, descripción de imágenes, fotogramas, croquis, bandas sonoras.</span></span></label></li>
+        <li><label><input type="checkbox"><span><b>Ficha técnica y artística</b><span>Datos de producción y equipo.</span></span></label></li>
+        <li><label><input type="checkbox"><span><b>Parámetros contextuales</b><span>Condiciones socioeconómicas y sociopolíticas de la producción.</span></span></label></li>
+        <li><label><input type="checkbox"><span><b>Análisis textual</b><span>Sinopsis, estructura y secuenciación.</span></span></label></li>
+      </ul>
+
+      <h3>3. Fase descriptivo-interpretativa</h3>
+      <ul class="checklist" data-lista="interpretativa">
+        <li><label><input type="checkbox"><span><b>Recursos expresivos: componentes del plano</b><span>Duración, ángulo, fijo o móvil, escala, encuadre, profundidad de campo, situación en el montaje y definición de la imagen (color, iluminación, composición).</span></span></label></li>
+        <li><label><input type="checkbox"><span><b>Recursos expresivos: sonido e imagen</b><span>Palabras, ruidos y músicas; relación in, fuera de campo y off; registro directo, postsincronizado o doblado.</span></span></label></li>
+        <li><label><input type="checkbox"><span><b>Recursos narrativos</b><span>Relato, narración y diégesis; personajes y trama; narrador e instancia narratorial; relaciones personaje-narrador; enunciación fílmica.</span></span></label></li>
+        <li><label><input type="checkbox"><span><b>Punto de vista y punto de escucha</b><span>Visual (dónde está la cámara), narrativo (quién narra y quién ve), ideológico (qué opina esa mirada) y lo mismo para el sonido.</span></span></label></li>
+      </ul>
+
+      <h3>4. Fase interpretativa</h3>
+      <ul class="checklist" data-lista="final">
+        <li><label><input type="checkbox"><span><b>Parámetros contextuales</b><span>Recepción del film e interpretaciones ajenas.</span></span></label></li>
+        <li><label><input type="checkbox"><span><b>Interpretación del analista</b><span>Tu lectura, ya apoyada en todo lo anterior.</span></span></label></li>
+      </ul>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 13 -->
+    <section id="videos">
+      <h2><span class="num">13</span>Vídeos de apoyo</h2>
+      <p class="entradilla">Los enlaces que acompañan a los apuntes, ordenados por el apartado al que pertenecen. Se abren en una pestaña nueva.</p>
+      <ul class="videos">
+        <li><a href="https://www.youtube.com/watch?v=sqHvlrgxY5Q&amp;list=PL8971D084030AB12D" target="_blank" rel="noopener">Serie de TCM sobre los géneros cinematográficos</a><span>Apartado 01 · Géneros</span></li>
+        <li><a href="https://www.youtube.com/watch?v=JL2RigaAt7M" target="_blank" rel="noopener">Errores de raccord (1)</a><span>Apartado 09 · Continuidad</span></li>
+        <li><a href="https://youtu.be/VeJiy46ivws" target="_blank" rel="noopener">Errores de raccord (2)</a><span>Apartado 09 · Continuidad</span></li>
+        <li><a href="https://www.youtube.com/watch?v=RjUZ9_LHdlM" target="_blank" rel="noopener">Cinco tipos de corte y discontinuidad sonora</a><span>Apartado 10 · Transiciones</span></li>
+        <li><a href="https://youtu.be/n9uUJQRzh4k" target="_blank" rel="noopener">Ejemplo de cortinillas</a><span>Apartado 10 · Transiciones</span></li>
+        <li><a href="https://youtu.be/Sl60nEiw2RA" target="_blank" rel="noopener">Ejemplo de barrido</a><span>Apartado 10 · Transiciones</span></li>
+        <li><a href="https://www.youtube.com/watch?v=a9-0tuNwdww" target="_blank" rel="noopener">La elipsis en el cine</a><span>Apartado 11 · Tiempo y montaje</span></li>
+        <li><a href="https://www.youtube.com/watch?v=VxvEo7pGi0o" target="_blank" rel="noopener">Flash-back y flash-forward</a><span>Apartado 11 · Tiempo y montaje</span></li>
+      </ul>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 14 -->
+    <section id="test">
+      <h2><span class="num">14</span>Autoevaluación</h2>
+      <p class="entradilla">Diez preguntas sobre lo anterior. Cada respuesta explica por qué, y puedes repetir el test tantas veces como quieras.</p>
+      <div class="quiz" id="quiz"></div>
+      <div class="marcador">
+        <span>Aciertos</span>
+        <output id="marcador">0 / 10</output>
+        <button class="btn" id="reiniciar">Empezar de nuevo</button>
+      </div>
+    </section>
+
+    <footer>
+      <p>Material de aula de Imagen y Sonido, 2.º de Bachillerato Artístico. Contenidos basados en los apuntes del tema «Recursos expresivos utilizados en producciones audiovisuales» de la Escuela de Arte Miguel Marmolejo (prof. Rubén Hernández García).</p>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Tema claro / oscuro ---------- */
+  var raiz = document.documentElement;
+  var temaBtn = document.getElementById('temaBtn');
+  function oscuroActivo(){
+    var t = raiz.getAttribute('data-theme');
+    if(t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  function pintarBotonTema(){
+    temaBtn.textContent = oscuroActivo() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro';
+  }
+  temaBtn.addEventListener('click', function(){
+    raiz.setAttribute('data-theme', oscuroActivo() ? 'light' : 'dark');
+    pintarBotonTema();
+  });
+  pintarBotonTema();
+
+  /* ---------- Guías del visor ---------- */
+  var marco = document.getElementById('marco');
+  var guiasBtn = document.getElementById('guiasBtn');
+  guiasBtn.addEventListener('click', function(){
+    var on = marco.classList.toggle('guias-on');
+    guiasBtn.setAttribute('aria-pressed', on ? 'true':'false');
+    guiasBtn.textContent = on ? 'Ocultar guías de encuadre' : 'Mostrar guías de encuadre';
+  });
+
+  /* ---------- Timecode ---------- */
+  var tc = document.getElementById('tc');
+  var f = 0;
+  setInterval(function(){
+    f = (f + 1) % (25*60*60);
+    var s = Math.floor(f/25), fr = f % 25;
+    var mm = Math.floor(s/60) % 60, ss = s % 60, hh = Math.floor(s/3600);
+    function d(n){ return (n<10?'0':'') + n; }
+    tc.textContent = d(hh)+':'+d(mm)+':'+d(ss)+':'+d(fr);
+  }, 40);
+
+  /* ---------- Utilidad: grupos de botones ---------- */
+  function construirMandos(contenedor, datos, alElegir){
+    datos.forEach(function(item, i){
+      var b = document.createElement('button');
+      b.className = 'btn' + (i===0 ? ' activo' : '');
+      b.type = 'button';
+      b.textContent = item.corto;
+      b.setAttribute('aria-pressed', i===0 ? 'true':'false');
+      b.addEventListener('click', function(){
+        Array.prototype.forEach.call(contenedor.children, function(o){
+          o.classList.remove('activo'); o.setAttribute('aria-pressed','false');
+        });
+        b.classList.add('activo'); b.setAttribute('aria-pressed','true');
+        alElegir(item);
+      });
+      contenedor.appendChild(b);
+    });
+  }
+
+  /* ---------- 04 Escala de planos ---------- */
+  var escalas = [
+    {corto:'GPG', nombre:'Gran plano general (GPG)', y0:0, y1:260,
+     desc:'El personaje queda diluido en un entorno que lo supera. Describe el lugar y sitúa la acción antes de entrar en ella.',
+     uso:'Abrir una secuencia, establecer la geografía, subrayar la pequeñez del personaje.'},
+    {corto:'PG', nombre:'Plano general (PG)', y0:30, y1:250,
+     desc:'La figura completa, de la cabeza a los pies, con espacio alrededor. Todavía manda el escenario.',
+     uso:'Mostrar acción física completa y la relación del personaje con el espacio.'},
+    {corto:'PA', nombre:'Plano americano (PA)', y0:50, y1:180,
+     desc:'Corta a la altura de las rodillas o medio muslo. Nació en el western para que cupieran las cartucheras.',
+     uso:'Diálogos con presencia corporal, grupos, gestualidad de brazos y manos.'},
+    {corto:'PML', nombre:'Plano medio largo (PML)', y0:52, y1:155,
+     desc:'De la cintura hacia arriba. Equilibrio entre el gesto del cuerpo y la expresión del rostro.',
+     uso:'Conversaciones, entrevistas, presentadores.'},
+    {corto:'PMC', nombre:'Plano medio corto (PMC)', y0:55, y1:128,
+     desc:'Del pecho hacia arriba. El entorno empieza a desaparecer y el rostro gana el cuadro.',
+     uso:'Aumentar la intimidad del diálogo sin romper el contacto con el espacio.'},
+    {corto:'PP', nombre:'Primer plano (PP)', y0:57, y1:104,
+     desc:'Rostro y hombros. Ya no informa del lugar: informa del estado interior del personaje.',
+     uso:'Reacciones, momentos de decisión, subrayar una emoción.'},
+    {corto:'PPP', nombre:'Primerísimo primer plano (PPP)', y0:60, y1:90,
+     desc:'Solo el rostro, sin aire. Intensidad máxima y ninguna vía de escape para el espectador.',
+     uso:'Clímax emocional, tensión, momentos de revelación.'},
+    {corto:'PD', nombre:'Plano detalle (PD)', y0:68, y1:84,
+     desc:'Una parte mínima: los ojos, una mano, un objeto. Señala aquello que el relato necesita que veamos.',
+     uso:'Destacar un objeto clave, una mirada, un gesto que cambia la escena.'}
+  ];
+  var agujero = document.getElementById('agujero');
+  var marcoEsc = document.getElementById('marcoEscala');
+  function pintarEscala(e){
+    var h = e.y1 - e.y0;
+    var w = Math.min(400, h * 1.6);
+    var x = Math.max(0, Math.min(400 - w, 201 - w/2));
+    [agujero, marcoEsc].forEach(function(el){
+      el.setAttribute('x', x.toFixed(1));
+      el.setAttribute('y', e.y0);
+      el.setAttribute('width', w.toFixed(1));
+      el.setAttribute('height', h);
+    });
+    document.getElementById('escalaNombre').textContent = e.nombre;
+    document.getElementById('escalaDesc').textContent = e.desc;
+    document.getElementById('escalaUso').textContent = e.uso;
+  }
+  construirMandos(document.getElementById('mandosEscala'), escalas, pintarEscala);
+  pintarEscala(escalas[0]);
+
+  /* ---------- 06 Angulación ---------- */
+  var angulos = [
+    {corto:'Normal', nombre:'Normal', grados:0,
+     desc:'La acción se sitúa a la altura de los ojos. Es un ángulo informativo: cuenta lo que ocurre sin cargarlo de intención.',
+     uso:'Neutralidad. El espectador mira como si estuviera presente en la escena.'},
+    {corto:'Picado', nombre:'Picado', grados:38,
+     desc:'La cámara se sitúa por encima de la acción y la ve de arriba abajo.',
+     uso:'Separa al observador de lo que ve, como quien mira por encima del hombro, sin implicación emocional.'},
+    {corto:'Cenital', nombre:'Cenital', grados:88,
+     desc:'El picado máximo: la cámara queda completamente vertical sobre la acción.',
+     uso:'Mirada absoluta, casi geométrica. Convierte a los personajes en figuras dentro de un mapa.'},
+    {corto:'Contrapicado', nombre:'Contrapicado', grados:-36,
+     desc:'La cámara se coloca debajo de la acción y enfoca de abajo arriba; suele dar planos más cerrados que el picado.',
+     uso:'La acción se echa encima del espectador: aparece implicación emocional, temor o miedo.'},
+    {corto:'Nadir', nombre:'Nadir', grados:-84,
+     desc:'El contrapicado máximo, en vertical desde el suelo. Es más un plano ideal que real y resulta poco frecuente.',
+     uso:'Efecto extremo, casi imposible; se reserva para momentos muy marcados.'}
+  ];
+  var camara = document.getElementById('camara');
+  var rayo = document.getElementById('rayo');
+  var etiquetaAng = document.getElementById('etiquetaAng');
+  function pintarAngulo(a){
+    var cx = 96, cy = 132, r = 112;
+    var rad = a.grados * Math.PI / 180;
+    // posición sobre el arco: ángulo medido desde la horizontal derecha
+    var X = cx + r * Math.cos(rad);
+    var Y = cy - r * Math.sin(rad);
+    camara.setAttribute('transform', 'translate(' + X.toFixed(1) + ',' + Y.toFixed(1) + ') rotate(' + (-a.grados).toFixed(1) + ')');
+    rayo.setAttribute('x1', X.toFixed(1));
+    rayo.setAttribute('y1', Y.toFixed(1));
+    etiquetaAng.setAttribute('x', Math.min(344, X + 26));
+    etiquetaAng.setAttribute('y', Math.max(16, Y + 4));
+    etiquetaAng.textContent = a.nombre;
+    document.getElementById('angNombre').textContent = a.nombre;
+    document.getElementById('angDesc').textContent = a.desc;
+    document.getElementById('angUso').textContent = a.uso;
+  }
+  construirMandos(document.getElementById('mandosAngulo'), angulos, pintarAngulo);
+  pintarAngulo(angulos[0]);
+
+  /* ---------- 07 Composición ---------- */
+  var terciosBtn = document.getElementById('terciosBtn');
+  var aireBtn = document.getElementById('aireBtn');
+  var reticula = document.getElementById('reticula');
+  var sujeto = document.getElementById('sujeto');
+  var compTexto = document.getElementById('compTexto');
+  terciosBtn.addEventListener('click', function(){
+    var on = terciosBtn.getAttribute('aria-pressed') !== 'true';
+    terciosBtn.setAttribute('aria-pressed', on?'true':'false');
+    terciosBtn.classList.toggle('activo', on);
+    reticula.setAttribute('opacity', on ? '1' : '0');
+    terciosBtn.textContent = on ? 'Ocultar retícula y puntos fuertes' : 'Mostrar retícula y puntos fuertes';
+  });
+  aireBtn.addEventListener('click', function(){
+    var mal = aireBtn.getAttribute('aria-pressed') !== 'true';
+    aireBtn.setAttribute('aria-pressed', mal?'true':'false');
+    aireBtn.classList.toggle('activo', mal);
+    sujeto.setAttribute('transform', mal ? 'translate(148,0)' : 'translate(0,0)');
+    aireBtn.textContent = mal ? 'Ver encuadre correcto' : 'Ver encuadre incorrecto';
+    compTexto.textContent = mal
+      ? 'El personaje queda pegado al borde derecho y mira fuera del cuadro: el aire está detrás de él y la mirada choca contra el límite de la imagen.'
+      : 'El personaje se apoya en la vertical izquierda y su cabeza cae cerca de un punto fuerte. El espacio vacío queda en la dirección de la mirada.';
+  });
+
+  /* ---------- 09 Ley del eje ---------- */
+  var ejeOk = document.getElementById('ejeOk');
+  var ejeKo = document.getElementById('ejeKo');
+  var cam2 = document.getElementById('cam2');
+  var ojosB = document.getElementById('ojosB');
+  var ejeTexto = document.getElementById('ejeTexto');
+  function estadoEje(correcto){
+    ejeOk.classList.toggle('activo', correcto);
+    ejeOk.setAttribute('aria-pressed', correcto?'true':'false');
+    ejeKo.classList.toggle('activo', !correcto);
+    ejeKo.setAttribute('aria-pressed', !correcto?'true':'false');
+    cam2.setAttribute('transform', correcto ? 'translate(260,175)' : 'translate(260,-15) rotate(180)');
+    // al cruzar el eje, B parece mirar al mismo lado que A
+    ojosB.setAttribute('transform', correcto ? 'translate(0,0)' : 'translate(14,0)');
+    ejeTexto.textContent = correcto
+      ? 'Ambas cámaras están en la misma mitad del escenario. Al montar plano y contraplano, las miradas se corresponden y el espectador entiende que A y B hablan entre sí.'
+      : 'La cámara 2 ha cruzado el eje: los dos personajes miran ahora hacia el mismo lado de la pantalla y parece que hablan con otra persona. Es un salto de eje.';
+  }
+  ejeOk.addEventListener('click', function(){ estadoEje(true); });
+  ejeKo.addEventListener('click', function(){ estadoEje(false); });
+  estadoEje(true);
+
+  /* ---------- 10 Transiciones ---------- */
+  var transiciones = [
+    {corto:'Corte', clave:'corte', nombre:'El corte',
+     desc:'Paso de un plano a otro sin ningún tipo de puntuación: acaba uno y empieza el siguiente. Acelera el ritmo cuando no es necesario mostrarlo todo.',
+     ej:'La escena del asesinato en Psicosis: setenta posiciones de cámara y múltiples cortes para cuarenta y cinco segundos que Hitchcock tardó siete días en rodar.'},
+    {corto:'Fundido', clave:'fundido', nombre:'El fundido',
+     desc:'El plano saliente adopta un color —normalmente negro o blanco—, que permanece unos instantes en pantalla hasta que el plano entrante abre desde ese mismo color.',
+     ej:'Cierre de un bloque narrativo o paso de un capítulo a otro.'},
+    {corto:'Encadenado', clave:'encadenado', nombre:'El encadenado',
+     desc:'Entrelaza dos planos: en un breve lapso el saliente desaparece mientras el entrante se hace nítido. Es una transición suave y agradable a la vista.',
+     ej:'Paso del tiempo dentro de una misma línea narrativa.'},
+    {corto:'Cortinilla', clave:'cortinilla', nombre:'La cortinilla',
+     desc:'El nuevo plano emerge desplazando al anterior en el mismo encuadre, como un telón. El espectador solo ve una línea que atraviesa la pantalla.',
+     ej:'Muy usada en el Hollywood de los años treinta y cuarenta; hoy es poco frecuente.'},
+    {corto:'Barrido', clave:'barrido', nombre:'El barrido',
+     desc:'Sugiere un desplazamiento vertiginoso de la cámara entre dos escenarios. Durante la transición solo se ven colores y formas indistinguibles.',
+     ej:'Cambios rápidos de localización dentro de una misma secuencia.'},
+    {corto:'Desenfoque', clave:'desenfoque', nombre:'El desenfoque',
+     desc:'Desenfoca el plano saliente y enfoca el entrante. Se utiliza sobre todo para los cambios espaciales.',
+     ej:'Paso de un espacio a otro, o entrada en un recuerdo.'}
+  ];
+  var escenario = document.getElementById('escenario');
+  function pintarTrans(t){
+    escenario.removeAttribute('data-t');
+    void escenario.offsetWidth;
+    escenario.setAttribute('data-t', t.clave);
+    document.getElementById('transNombre').textContent = t.nombre;
+    document.getElementById('transDesc').textContent = t.desc;
+    document.getElementById('transEj').textContent = t.ej;
+  }
+  construirMandos(document.getElementById('mandosTrans'), transiciones, pintarTrans);
+
+  /* ---------- 12 Checklists ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('.checklist input'), function(inp){
+    inp.addEventListener('change', function(){
+      inp.closest('li').classList.toggle('hecho', inp.checked);
+    });
+  });
+
+  /* ---------- 13 Autoevaluación ---------- */
+  var preguntas = [
+    {p:'Grabas sin parar y luego usas solo un fragmento en el montaje final. ¿Cómo se llama ese fragmento?',
+     o:['Toma','Plano','Escena','Secuencia'], c:1,
+     f:'La toma es todo lo grabado entre pulsar y volver a pulsar el botón. El plano es la parte útil que seleccionas de esa toma para el montaje.'},
+    {p:'Una cámara gira sobre su eje sin desplazarse. ¿Qué movimiento es?',
+     o:['Travelling','Zoom','Paneo','Grúa'], c:2,
+     f:'El paneo es rotación sin traslación. El travelling sí desplaza físicamente la cámara y el zoom no mueve la cámara, sino las lentes.'},
+    {p:'¿Qué ángulo tiende a separar al espectador de lo que ve, sin implicación emocional?',
+     o:['Contrapicado','Picado','Nadir','Aberrante'], c:1,
+     f:'El picado sitúa la cámara por encima de la acción: es un mirar por encima del hombro. El contrapicado hace lo contrario e implica emocionalmente.'},
+    {p:'Un personaje mira hacia la derecha del cuadro. ¿Dónde debe quedar el espacio vacío?',
+     o:['A su izquierda, detrás de él','A la derecha, en la dirección de la mirada','Repartido por igual','Centrado bajo la figura'], c:1,
+     f:'El aire se deja en la dirección hacia donde mira o se mueve el personaje; si no, la mirada choca contra el borde del encuadre.'},
+    {p:'Pasar de un plano a otro del mismo sujeto moviendo la cámara solo 15.º produce...',
+     o:['Un encadenado','Ruido visual innecesario','Un salto de eje','Un plano secuencia'], c:1,
+     f:'Es la regla de los 30.º: un cambio menor no aporta información nueva y el espectador lo percibe como ruido.'},
+    {p:'Dos personajes dialogan. Colocas una cámara a cada lado del eje de acción. ¿Qué ocurre?',
+     o:['Se refuerza el raccord de miradas','Se produce un salto de eje','Se gana profundidad de campo','Se crea un montaje alterno'], c:1,
+     f:'Al cruzar el eje, ambos parecen mirar hacia el mismo lado y da la impresión de que hablan con otra persona. Solo se hace a propósito, con criterio narrativo.'},
+    {p:'¿Qué transición entrelaza dos planos, uno desapareciendo mientras el otro se hace nítido?',
+     o:['Corte','Cortinilla','Encadenado','Barrido'], c:2,
+     f:'El encadenado superpone el plano saliente y el entrante durante un breve lapso: es la transición suave por excelencia.'},
+    {p:'Un documental de naturaleza muestra una flor abriéndose en cinco segundos. ¿Qué ha hecho con el tiempo?',
+     o:['Alargamiento','Adecuación','Condensación','Paralelismo'], c:2,
+     f:'Es condensación mecánica por aceleración: se graba a menos velocidad de la que se proyecta.'},
+    {p:'Se alternan dos acciones que ocurren en lugares distintos pero al mismo tiempo. ¿Qué montaje es?',
+     o:['Montaje alterno','Montaje invertido','Montaje analítico','Montaje sintético'], c:0,
+     f:'El alterno exige simultaneidad. El montaje en paralelo relaciona acciones en espacios y momentos diferentes.'},
+    {p:'¿Qué elemento del análisis recoge plano a plano la duración, la escala, el ángulo y los raccords?',
+     o:['La ficha técnica','El découpage','La sinopsis','El desglose'], c:1,
+     f:'El découpage es la descripción plano a plano, con fotogramas si se trabaja con material audiovisual. El desglose, en cambio, es una herramienta de producción previa al rodaje.'}
+  ];
+  var letras = ['A','B','C','D'];
+  var quiz = document.getElementById('quiz');
+  var marcador = document.getElementById('marcador');
+  var aciertos = 0, respondidas = 0;
+
+  function pintarMarcador(){
+    marcador.textContent = aciertos + ' / ' + preguntas.length;
+  }
+  function construirQuiz(){
+    quiz.innerHTML = '';
+    aciertos = 0; respondidas = 0; pintarMarcador();
+    preguntas.forEach(function(q, i){
+      var bloque = document.createElement('div');
+      bloque.className = 'preg';
+      var enun = document.createElement('p');
+      enun.innerHTML = '<span class="n">' + (i+1) + '</span>';
+      enun.appendChild(document.createTextNode(q.p));
+      bloque.appendChild(enun);
+
+      var ops = document.createElement('div');
+      ops.className = 'ops';
+      var fb = document.createElement('p');
+      fb.className = 'feedback';
+
+      q.o.forEach(function(texto, j){
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'op';
+        var l = document.createElement('span');
+        l.className = 'letra';
+        l.textContent = letras[j];
+        b.appendChild(l);
+        b.appendChild(document.createTextNode(texto));
+        b.addEventListener('click', function(){
+          Array.prototype.forEach.call(ops.children, function(o){ o.disabled = true; });
+          var bien = j === q.c;
+          b.classList.add(bien ? 'bien' : 'mal');
+          if(!bien) ops.children[q.c].classList.add('bien');
+          fb.textContent = (bien ? 'Correcto. ' : 'No es esa. ') + q.f;
+          fb.classList.add('visible');
+          respondidas++;
+          if(bien) aciertos++;
+          pintarMarcador();
+        });
+        ops.appendChild(b);
+      });
+      bloque.appendChild(ops);
+      bloque.appendChild(fb);
+      quiz.appendChild(bloque);
+    });
+  }
+  document.getElementById('reiniciar').addEventListener('click', function(){
+    construirQuiz();
+    document.getElementById('test').scrollIntoView({block:'start'});
+  });
+  construirQuiz();
+
+  /* ---------- Índice activo ---------- */
+  var enlaces = Array.prototype.slice.call(document.querySelectorAll('.indice a'));
+  var secciones = enlaces.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entradas){
+      entradas.forEach(function(e){
+        if(e.isIntersecting){
+          enlaces.forEach(function(a){ a.classList.remove('activo'); });
+          var idx = secciones.indexOf(e.target);
+          if(idx > -1){
+            enlaces[idx].classList.add('activo');
+          }
+        }
+      });
+    }, {rootMargin:'-20% 0px -70% 0px'});
+    secciones.forEach(function(s){ if(s) obs.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>
