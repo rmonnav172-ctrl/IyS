@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Análisis de situaciones en producciones audiovisuales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E8ECEE; --surface:#FFFFFF; --surface-2:#F2F5F6;
+  --ink:#11222D; --ink-soft:#4A5F6C; --line:#C9D3D8;
+  --azul:#15719F; --azul-soft:#D6E9F3;
+  --ambar:#B5720C; --ambar-soft:#F6E7CB;
+  --rojo:#B0402C; --rojo-soft:#F5DED8;
+  --film:#11222D; --film-ink:#E9EEF0; --focus:#15719F;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D161C; --surface:#14222B; --surface-2:#1B2B35;
+    --ink:#E3EAEE; --ink-soft:#9DB1BC; --line:#2C3F4B;
+    --azul:#6EC0E8; --azul-soft:#173544;
+    --ambar:#E5AC4A; --ambar-soft:#3A2D14;
+    --rojo:#E38C79; --rojo-soft:#3A211C;
+    --film:#060D11; --film-ink:#E9EEF0; --focus:#6EC0E8;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D161C; --surface:#14222B; --surface-2:#1B2B35;
+  --ink:#E3EAEE; --ink-soft:#9DB1BC; --line:#2C3F4B;
+  --azul:#6EC0E8; --azul-soft:#173544;
+  --ambar:#E5AC4A; --ambar-soft:#3A2D14;
+  --rojo:#E38C79; --rojo-soft:#3A211C;
+  --film:#060D11; --film-ink:#E9EEF0; --focus:#6EC0E8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Spectral",Georgia,serif;font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.ui{font-family:"Archivo","Helvetica Neue",Arial,sans-serif}
+a{color:var(--azul)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:2px}
+
+.visor{background:var(--film);color:var(--film-ink);padding:clamp(18px,4vw,40px)}
+.visor-marco{position:relative;max-width:1100px;margin:0 auto;border:1px solid rgba(233,238,240,.28);aspect-ratio:16/8;min-height:330px;display:flex;flex-direction:column;justify-content:center;padding:clamp(20px,5vw,60px);overflow:hidden}
+.esquina{position:absolute;width:26px;height:26px;border:2px solid rgba(233,238,240,.7)}
+.esquina.tl{top:12px;left:12px;border-right:0;border-bottom:0}
+.esquina.tr{top:12px;right:12px;border-left:0;border-bottom:0}
+.esquina.bl{bottom:12px;left:12px;border-right:0;border-top:0}
+.esquina.br{bottom:12px;right:12px;border-left:0;border-top:0}
+.hud{position:absolute;left:0;right:0;display:flex;justify-content:space-between;font-family:"Archivo",sans-serif;font-size:12px;letter-spacing:.14em;color:rgba(233,238,240,.62);padding:0 clamp(20px,5vw,60px)}
+.hud.arriba{top:26px}.hud.abajo{bottom:26px}
+.rec{display:inline-flex;align-items:center;gap:7px}
+.rec b{width:9px;height:9px;border-radius:50%;background:#E0553C;animation:late 2.4s ease-in-out infinite}
+@keyframes late{0%,70%,100%{opacity:1}85%{opacity:.25}}
+h1{font-size:clamp(1.9rem,5.6vw,3.7rem);line-height:1.02;font-weight:800;letter-spacing:-.02em;margin:0 0 .5rem;max-width:17ch}
+.visor p{max-width:48ch;color:rgba(233,238,240,.78);margin:0 0 1.2rem;font-size:1.02rem}
+.visor-acciones{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.cinta{position:absolute;right:clamp(20px,5vw,60px);top:50%;transform:translateY(-50%);width:110px;height:150px;opacity:.35;display:none}
+@media(min-width:760px){.cinta{display:block}}
+
+button{font:inherit;cursor:pointer}
+.btn{font-family:"Archivo",sans-serif;font-size:.86rem;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:.5rem .9rem;border-radius:2px;transition:background .18s ease,color .18s ease,border-color .18s ease}
+.btn:hover{border-color:var(--azul)}
+.btn[aria-pressed="true"],.btn.activo{background:var(--azul);border-color:var(--azul);color:#fff}
+:root[data-theme="dark"] .btn[aria-pressed="true"],:root[data-theme="dark"] .btn.activo{color:#07151D}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn[aria-pressed="true"],:root:not([data-theme="light"]) .btn.activo{color:#07151D}}
+.btn-visor{border-color:rgba(233,238,240,.45);background:transparent;color:var(--film-ink)}
+.btn-visor:hover{border-color:#6EC0E8}
+.btn-visor[aria-pressed="true"]{background:#6EC0E8;color:#07151D;border-color:#6EC0E8}
+
+.envoltorio{max-width:1180px;margin:0 auto;padding:0 clamp(14px,3vw,28px) 90px;display:grid;gap:clamp(20px,4vw,48px)}
+@media (min-width:1000px){.envoltorio{grid-template-columns:210px minmax(0,1fr);align-items:start}}
+nav.indice{position:sticky;top:0;z-index:20;background:var(--paper);padding:10px 0;border-bottom:1px solid var(--line)}
+@media (min-width:1000px){nav.indice{top:16px;border-bottom:0;padding:24px 0}}
+.indice ol{list-style:none;margin:0;padding:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin}
+@media (min-width:1000px){.indice ol{flex-direction:column;overflow:visible;gap:1px}}
+.indice a{display:flex;gap:9px;align-items:baseline;font-family:"Archivo",sans-serif;font-size:.82rem;font-weight:500;color:var(--ink-soft);text-decoration:none;white-space:nowrap;padding:.4rem .55rem;border-left:2px solid transparent;border-radius:2px}
+.indice a:hover{color:var(--ink);background:var(--surface-2)}
+.indice a.activo{color:var(--azul);border-left-color:var(--azul);background:var(--surface-2)}
+.indice a span{font-variant-numeric:tabular-nums;opacity:.6}
+@media (max-width:999px){.indice a{border-left:0;border-bottom:2px solid transparent}.indice a.activo{border-bottom-color:var(--azul)}}
+
+main{min-width:0;display:grid;gap:clamp(34px,6vw,64px);padding-top:clamp(24px,5vw,56px)}
+section{scroll-margin-top:90px}
+h2{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:800;letter-spacing:-.015em;margin:0 0 .35rem;line-height:1.1}
+h2 .num{display:inline-block;font-size:.82rem;font-weight:600;color:var(--azul);letter-spacing:.08em;margin-right:.6rem;vertical-align:.3em;font-variant-numeric:tabular-nums}
+.entradilla{color:var(--ink-soft);max-width:64ch;margin:.2rem 0 1.4rem;font-size:1.02rem}
+p,li{max-width:70ch}
+h3{font-size:1.06rem;font-weight:600;margin:1.6rem 0 .4rem;letter-spacing:-.005em}
+h4{font-size:.95rem;font-weight:600;margin:0 0 .3rem}
+.sep{border:0;border-top:1px solid var(--line);margin:0}
+
+.fichas{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);margin:1.2rem 0}
+@media (min-width:640px){.fichas.dos{grid-template-columns:1fr 1fr}.fichas.tres{grid-template-columns:repeat(3,1fr)}}
+.ficha{background:var(--surface);padding:1rem 1.1rem}
+.ficha p{margin:.25rem 0 0;font-size:.95rem;color:var(--ink-soft);max-width:none}
+.ficha .term{color:var(--azul);font-weight:600}
+
+dl.terminos{margin:1.2rem 0;display:grid;gap:0}
+dl.terminos > div{padding:.85rem 0;border-top:1px solid var(--line)}
+dl.terminos > div:last-child{border-bottom:1px solid var(--line)}
+@media (min-width:700px){dl.terminos > div{display:grid;grid-template-columns:220px 1fr;gap:1.4rem}}
+dt{font-family:"Archivo",sans-serif;font-weight:600;font-size:.95rem}
+dd{margin:0;color:var(--ink-soft);font-size:.97rem}
+dd em{color:var(--ink);font-style:italic}
+
+.nota{border-left:3px solid var(--ambar);background:var(--ambar-soft);padding:.85rem 1rem;margin:1.3rem 0;font-size:.95rem}
+.nota.alerta{border-left-color:var(--rojo);background:var(--rojo-soft)}
+.nota strong{font-family:"Archivo",sans-serif}
+.nota p{margin:0;max-width:none}
+
+.lab{border:1px solid var(--line);background:var(--surface);margin:1.5rem 0}
+.lab-cab{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:space-between;align-items:center;padding:.7rem 1rem;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.lab-cab h3{margin:0;font-size:.9rem;font-weight:600;letter-spacing:.02em}
+.lab-cab .pista{font-family:"Archivo",sans-serif;font-size:.76rem;color:var(--ink-soft)}
+.lab-cuerpo{padding:1rem}
+.mandos{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.mandos .btn{padding:.38rem .7rem;font-size:.8rem}
+.lab-salida{display:grid;gap:1rem}
+@media (min-width:760px){.lab-salida.lado{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}}
+.lienzo{width:100%;height:auto;display:block;background:var(--surface-2);border:1px solid var(--line)}
+.lectura h4{font-family:"Archivo",sans-serif;font-size:1.02rem;margin-bottom:.35rem}
+.lectura p{margin:.2rem 0 .7rem;font-size:.95rem;color:var(--ink-soft)}
+.lectura .uso{font-size:.9rem;border-top:1px solid var(--line);padding-top:.6rem;color:var(--ink)}
+.lectura .uso b{font-family:"Archivo",sans-serif;font-size:.78rem;color:var(--azul);display:block;margin-bottom:.15rem}
+
+/* clasificador elipsis */
+.clasif{display:grid;gap:.5rem}
+.tarjeta-op{border:1px solid var(--line);background:var(--surface-2);padding:.7rem .9rem;border-radius:2px;text-align:left;font-family:"Spectral",serif;font-size:.96rem;cursor:pointer}
+.tarjeta-op:hover{border-color:var(--azul)}
+.tarjeta-op b{font-family:"Archivo",sans-serif;display:block;font-size:.82rem;color:var(--azul);margin-bottom:.15rem}
+.revelado{display:none;border-left:3px solid var(--azul);background:var(--azul-soft);padding:.8rem 1rem;margin-top:.9rem;font-size:.94rem}
+.revelado.visible{display:block}
+
+/* eje / plano contraplano */
+.escenario2{position:relative;aspect-ratio:16/9;overflow:hidden;background:#000;border:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr}
+.escenario2 .lado{position:relative;display:grid;place-items:center;overflow:hidden}
+.escenario2 svg{width:100%;height:100%}
+
+/* timeline montaje */
+.timeline{position:relative;margin:1.4rem 0;padding-left:1.4rem;border-left:2px solid var(--line)}
+.hito{position:relative;padding:0 0 1.6rem 1.1rem}
+.hito::before{content:"";position:absolute;left:calc(-1.4rem - 5px);top:.3rem;width:10px;height:10px;border-radius:50%;background:var(--azul);border:2px solid var(--surface)}
+.hito .anio{font-family:"Archivo",sans-serif;font-weight:800;color:var(--azul);font-size:.85rem;letter-spacing:.04em;display:block;margin-bottom:.15rem}
+.hito h4{margin:0 0 .3rem}
+.hito p{margin:0;color:var(--ink-soft);font-size:.95rem}
+
+.scroll-x{overflow-x:auto}
+.tabla{width:100%;border-collapse:collapse;margin:1.1rem 0;font-size:.95rem}
+.tabla th,.tabla td{text-align:left;vertical-align:top;padding:.55rem .7rem;border-bottom:1px solid var(--line)}
+.tabla th{font-family:"Archivo",sans-serif;font-size:.8rem;font-weight:600;color:var(--azul);white-space:nowrap}
+
+.checklist{list-style:none;padding:0;margin:1rem 0;display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.checklist li{background:var(--surface);padding:.7rem .9rem;max-width:none}
+.checklist label{display:flex;gap:.7rem;align-items:flex-start;cursor:pointer}
+.checklist input{margin-top:.35rem;accent-color:var(--azul);width:16px;height:16px;flex:0 0 auto}
+.checklist b{font-family:"Archivo",sans-serif;font-weight:600;font-size:.92rem}
+.checklist span{display:block;color:var(--ink-soft);font-size:.9rem}
+.checklist li.hecho b{text-decoration:line-through;opacity:.55}
+
+.videos{list-style:none;padding:0;margin:1.2rem 0;display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.videos li{background:var(--surface);padding:.75rem .95rem;max-width:none;display:flex;flex-wrap:wrap;gap:.3rem 1rem;align-items:baseline;justify-content:space-between}
+.videos a{font-family:"Archivo",sans-serif;font-weight:600;font-size:.95rem;text-decoration:none;border-bottom:1px solid var(--azul)}
+.videos a:hover{background:var(--azul-soft)}
+.videos span{font-family:"Archivo",sans-serif;font-size:.78rem;color:var(--ink-soft)}
+
+.quiz{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.preg{background:var(--surface);padding:1rem 1.1rem}
+.preg > p{font-weight:500;margin:0 0 .7rem}
+.preg .n{font-family:"Archivo",sans-serif;color:var(--azul);font-weight:600;margin-right:.45rem}
+.ops{display:grid;gap:6px}
+.op{display:flex;gap:.6rem;align-items:flex-start;text-align:left;width:100%;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);padding:.55rem .7rem;border-radius:2px;font-size:.95rem;line-height:1.45;font-family:"Spectral",serif}
+.op:hover:not(:disabled){border-color:var(--azul)}
+.op:disabled{cursor:default}
+.op .letra{font-family:"Archivo",sans-serif;font-weight:600;font-size:.8rem;color:var(--ink-soft);padding-top:.12rem}
+.op.bien{border-color:#2E8B57;background:rgba(46,139,87,.14)}
+.op.mal{border-color:#C1462F;background:rgba(193,70,47,.13)}
+.feedback{margin:.7rem 0 0;font-size:.92rem;color:var(--ink-soft);display:none}
+.feedback.visible{display:block}
+.marcador{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;justify-content:space-between;background:var(--surface-2);border:1px solid var(--line);border-top:0;padding:.8rem 1.1rem;font-family:"Archivo",sans-serif;font-size:.92rem}
+.marcador output{font-weight:800;font-size:1.3rem;color:var(--azul);font-variant-numeric:tabular-nums}
+
+footer{border-top:1px solid var(--line);margin-top:10px;padding:1.6rem 0 0;color:var(--ink-soft);font-size:.88rem}
+footer p{max-width:70ch}
+</style>
+</head>
+<body>
+
+<header class="visor">
+  <div class="visor-marco">
+    <span class="esquina tl"></span><span class="esquina tr"></span>
+    <span class="esquina bl"></span><span class="esquina br"></span>
+    <div class="hud arriba"><span class="rec"><b></b>REC</span><span id="tc">00:00:00:00</span></div>
+    <h1>Análisis de situaciones en producciones audiovisuales</h1>
+    <p>Un mismo material rodado puede montarse de mil maneras. Aquí se trata de aprender a mirar esas decisiones: qué mantiene la continuidad, qué la rompe a propósito y por qué.</p>
+    <div class="visor-acciones">
+      <button class="btn btn-visor" id="temaBtn">Cambiar a modo oscuro</button>
+    </div>
+    <div class="hud abajo"><span>Imagen y Sonido · 2.º Bachillerato</span><span>Bloque 2</span></div>
+  </div>
+</header>
+
+<div class="envoltorio">
+  <nav class="indice" aria-label="Índice del bloque">
+    <ol>
+      <li><a href="#raccord"><span>1</span>Tipos de raccord</a></li>
+      <li><a href="#puntuacion"><span>2</span>Puntuación y transición</a></li>
+      <li><a href="#elipsis"><span>3</span>La elipsis</a></li>
+      <li><a href="#campo"><span>4</span>Campo y fuera de campo</a></li>
+      <li><a href="#eje"><span>5</span>Eje de acción</a></li>
+      <li><a href="#contraplano"><span>6</span>Plano y contraplano</a></li>
+      <li><a href="#master"><span>7</span>El plano máster</a></li>
+      <li><a href="#historia"><span>8</span>Evolución del montaje</a></li>
+      <li><a href="#tipos"><span>9</span>Tipos de montaje</a></li>
+      <li><a href="#videos"><span>10</span>Vídeos</a></li>
+      <li><a href="#test"><span>11</span>Autoevaluación</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <!-- 1 -->
+    <section id="raccord">
+      <h2><span class="num">01</span>Los tipos de raccord</h2>
+      <p class="entradilla">La <strong>continuidad narrativa</strong> es la ilusión de un único mensaje construido con distintas tomas o planos: el guion literario. El <strong>raccord</strong> es el ajuste técnico que la hace posible: el guion técnico. Quien lo vigila en rodaje es el <em>script</em>.</p>
+
+      <p>Piensa en una película de acción con peleas constantes en la que el protagonista no llega ni a despeinarse. No es lo «natural» —la ropa debería estropearse con la acción—, pero la realización ha decidido mantener el raccord de vestuario, y la mayoría del público no lo va a sentir como algo raro.</p>
+
+      <div class="fichas tres">
+        <div class="ficha"><h4 class="term">De posición</h4><p>El actor ocupa la misma posición de una secuencia a otra, si el guion así lo exige.</p></div>
+        <div class="ficha"><h4 class="term">De miradas</h4><p>Las miradas siguen una orientación lógica en planos consecutivos.</p></div>
+        <div class="ficha"><h4 class="term">De vestuario</h4><p>Se respetan los cambios —o su ausencia— y los daños sufridos por la ropa según el guion.</p></div>
+        <div class="ficha"><h4 class="term">De luz o iluminación</h4><p>La iluminación de dos planos consecutivos debe ser la misma.</p></div>
+        <div class="ficha"><h4 class="term">De posición de cámara</h4><p>Determinante a la hora de montar la película.</p></div>
+        <div class="ficha"><h4 class="term">De maquillaje y peluquería</h4><p>Peinado, heridas o maquillaje coherentes entre planos de una misma escena.</p></div>
+        <div class="ficha"><h4 class="term">De montaje</h4><p>El ajuste que da continuidad y sentido general a la narración.</p></div>
+      </div>
+
+      <p>Un truco habitual: cuando un actor va de un edificio a otro, su marcha mantiene una única dirección hasta llegar, grabemos el trayecto completo o solo un fragmento. La percepción del espectador rellena el salto que crea la elipsis sin que se note.</p>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 2 -->
+    <section id="puntuacion">
+      <h2><span class="num">02</span>Signos de puntuación y transición</h2>
+      <p class="entradilla">Igual que un texto no se transmite de corrido —usa comas y puntos—, el lenguaje audiovisual cuenta con fragmentos de imagen que cumplen la misma función.</p>
+
+      <dl class="terminos">
+        <div><dt>Corte o corte directo</dt><dd>La transición más básica: un plano se une al siguiente sin más. Da dinamismo e instantaneidad.</dd></div>
+        <div><dt>Fundido</dt><dd>La imagen se desvanece a un color —normalmente negro— o abre desde él. Suele significar paso de tiempo.</dd></div>
+        <div><dt>Fundido encadenado</dt><dd>Una toma se disuelve en otra gradualmente; hay un instante en que ambas se ven con el mismo valor. Da un espíritu más calmo.</dd></div>
+        <div><dt>Barrido</dt><dd>Como el fundido, pero con una imagen borrosa entre cada toma. Acelera la percepción y cambia el enfoque sin cambiar de escenario ni de tiempo.</dd></div>
+        <div><dt>Cortinillas</dt><dd>Muy asociadas hoy a vídeos familiares o a un estilo anticuado.</dd></div>
+      </dl>
+
+      <div class="nota"><p><strong>Regla práctica:</strong> el paso de una escena a otra debe sentirse natural, sin efectos innecesarios: un corte suele ser mejor que una cortinilla. Excepción: cuando la cámara está fija —como en muchos tutoriales de YouTube— y hay que ocultar un corte torpe, conviene un fundido breve o insertar otra toma para no dejar un salto que se note.</p></div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 3 -->
+    <section id="elipsis">
+      <h2><span class="num">03</span>La elipsis: qué se calla y por qué</h2>
+      <p class="entradilla">Una elipsis es un salto en el tiempo o en el espacio: se eliminan pasos intermedios sin que el espectador pierda la continuidad de la secuencia. Puede venir motivada por recortar tiempo real, por razones narrativas, por limitaciones técnicas de rodaje o por razones éticas.</p>
+
+      <div class="lab">
+        <div class="lab-cab">
+          <h3>¿Qué tipo de elipsis es?</h3>
+          <span class="pista">Elige un ejemplo y comprueba la clasificación</span>
+        </div>
+        <div class="lab-cuerpo">
+          <div class="clasif" id="clasifElipsis"></div>
+          <div class="revelado" id="revelado"></div>
+        </div>
+      </div>
+
+      <dl class="terminos">
+        <div><dt>Inherentes</dt><dd>Eliminan espacios y tiempos débiles o inútiles para la acción, o ajustan la duración total del metraje. A veces un rótulo aclara el salto: en <em>Náufrago</em> se elide una estancia de cuatro años en la isla.</dd></div>
+        <div><dt>Expresivas</dt><dd>Buscan un efecto dramático o un significado simbólico. En <em>2001: una odisea del espacio</em>, el hueso lanzado al aire por el simio se transforma en un satélite: la evolución de la tecnología humana en un solo corte.</dd></div>
+        <div><dt>De estructura — objetivas</dt><dd>Ocultan al espectador algo que ningún personaje ve tampoco. Típico del cine de detectives: un asesinato ocurre fuera de cámara y no se sabrá el autor hasta el final.</dd></div>
+        <div><dt>De estructura — subjetivas</dt><dd>Lo que ignora el personaje lo ignora también el espectador. Se suprime el sonido externo cuando el protagonista se sumerge en su propio pensamiento.</dd></div>
+        <div><dt>De contenido</dt><dd>Impuestas por la censura social: eliminación de escenas de sexo, violencia o heridas explícitas.</dd></div>
+      </dl>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 4 -->
+    <section id="campo">
+      <h2><span class="num">04</span>Campo y fuera de campo</h2>
+      <p class="entradilla">Sugerir sin mostrar obliga al espectador a imaginar lo que no ve, y eso lo hace partícipe de la narración.</p>
+      <div class="fichas dos">
+        <div class="ficha"><h4 class="term">Campo</h4><p>Todo lo que se muestra dentro de los bordes de la imagen.</p></div>
+        <div class="ficha"><h4 class="term">Fuera de campo</h4><p>Elementos espaciales y sonoros que forman parte de la escena pero no se muestran: espacio en off y sonido en off.</p></div>
+      </div>
+      <p>Además del efecto narrativo, el fuera de campo tiene una ventaja práctica: ahorra medios de producción, porque no hace falta rodar todos los planos para dar toda la información.</p>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 5 -->
+    <section id="eje">
+      <h2><span class="num">05</span>El eje de acción y su mantenimiento</h2>
+      <p class="entradilla">El eje de acción es la línea imaginaria que marca la acción de una escena: la dirección en que camina un personaje, o la línea que une a dos que dialogan. Determina en qué mitad del escenario puede colocarse la cámara sin confundir al espectador.</p>
+
+      <div class="lab">
+        <div class="lab-cab">
+          <h3>La «ley del semicírculo»</h3>
+          <span class="pista">Compara el montaje correcto con el salto de eje</span>
+        </div>
+        <div class="lab-cuerpo">
+          <div class="mandos">
+            <button class="btn activo" id="ejeOk" aria-pressed="true">Cámaras del mismo lado</button>
+            <button class="btn" id="ejeKo" aria-pressed="false">Cruzar el eje</button>
+          </div>
+          <div class="lab-salida lado">
+            <svg class="lienzo" viewBox="0 0 380 240" role="img" aria-labelledby="ejeTit">
+              <title id="ejeTit">Vista cenital de dos personajes y dos cámaras respecto al eje de acción</title>
+              <line x1="20" y1="80" x2="360" y2="80" stroke="#15719F" stroke-width="3"/>
+              <text x="160" y="68" font-family="Archivo, sans-serif" font-size="12" fill="#15719F">eje de acción</text>
+              <circle cx="120" cy="80" r="22" fill="none" stroke="currentColor" stroke-width="2.5"/>
+              <circle cx="260" cy="80" r="22" fill="none" stroke="currentColor" stroke-width="2.5"/>
+              <text x="98" y="40" font-family="Archivo, sans-serif" font-size="12" fill="currentColor">Personaje A</text>
+              <text x="238" y="40" font-family="Archivo, sans-serif" font-size="12" fill="currentColor">Personaje B</text>
+              <g transform="translate(120,175)"><rect x="-17" y="-12" width="30" height="24" rx="3" fill="#15719F"/><path d="M13 -7 l12 -6 v26 l-12 -6z" fill="#15719F"/><text x="-14" y="30" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">cámara 1</text></g>
+              <g id="cam2" transform="translate(260,175)"><rect x="-17" y="-12" width="30" height="24" rx="3" fill="#B5720C"/><path d="M13 -7 l12 -6 v26 l-12 -6z" fill="#B5720C"/><text x="-14" y="30" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">cámara 2</text></g>
+            </svg>
+            <div>
+              <div class="escenario2">
+                <div class="lado">
+                  <svg viewBox="0 0 120 80"><rect width="120" height="80" fill="#17384A"/><circle cx="60" cy="42" r="22" fill="#E8C9A8"/><path d="M38 38 a22 22 0 0 1 44 0 q-22 -13 -44 0z" fill="#6B3F2A"/><g id="ojosA"><circle cx="68" cy="42" r="3" fill="#2A2018"/><circle cx="54" cy="42" r="3" fill="#2A2018"/></g></svg>
+                </div>
+                <div class="lado">
+                  <svg viewBox="0 0 120 80"><rect width="120" height="80" fill="#17384A"/><circle cx="60" cy="42" r="22" fill="#D9B48F"/><path d="M38 38 a22 22 0 0 1 44 0 q-22 -13 -44 0z" fill="#2E2620"/><g id="ojosB"><circle cx="52" cy="42" r="3" fill="#2A2018"/><circle cx="66" cy="42" r="3" fill="#2A2018"/></g></svg>
+                </div>
+              </div>
+              <p style="margin:.7rem 0 0;font-size:.95rem;color:var(--ink-soft)" id="ejeTexto">Ambas cámaras están en la misma mitad del escenario. Al montar plano y contraplano, las miradas se corresponden: el espectador entiende que A y B hablan entre sí.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p>Saltar el eje a propósito deja de ser un error cuando responde a un criterio artístico o narrativo deliberado: se usa para sobresaltar o inquietar al espectador.</p>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 6 -->
+    <section id="contraplano">
+      <h2><span class="num">06</span>Plano y contraplano</h2>
+      <p class="entradilla">Dos planos contiguos que narran una acción; lo habitual es verlo en conversaciones de dos personajes uno frente al otro. Para que funcione hay que mantener el mismo tamaño de plano y la misma angulación de cámara.</p>
+
+      <p>En los planos y contraplanos suele incluirse el <strong>escorzo</strong>: la silueta del personaje que está de espaldas a la cámara, completa o solo un fragmento —un hombro, la nuca—, que ancla al espectador en el espacio de la conversación.</p>
+
+      <div class="nota"><p><strong>El plano-contraplano de los hermanos Coen:</strong> junto a su director de fotografía Roger Deakins, rompen la fórmula tradicional. Nunca muestran el escorzo del interlocutor; en su lugar usan un objetivo gran angular y se acercan al sujeto, lo que distorsiona ligeramente la realidad. Suelen situar la cámara dentro del espacio físico de la conversación, entre los dos personajes.</p></div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 7 -->
+    <section id="master">
+      <h2><span class="num">07</span>El plano máster</h2>
+      <p class="entradilla">Secuencia rodada en un solo plano —normalmente general— que presenta la continuidad completa de una acción y que luego se enriquece con insertos de otros planos.</p>
+      <p>Es una técnica de rodaje pensada para ahorrar tiempo y garantizar continuidad: primero se rueda el bloque entero con un plano general, y después se ruedan por separado los insertos —planos medios, americanos, detalles— que se combinarán en montaje.</p>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 8 -->
+    <section id="historia">
+      <h2><span class="num">08</span>Evolución histórica del montaje</h2>
+      <p class="entradilla">El montaje no nació con el cine: se fue descubriendo, casi por accidente, en los primeros veinte años del siglo.</p>
+
+      <div class="timeline">
+        <div class="hito">
+          <span class="anio">Años 1890</span>
+          <h4>Lumière: el no-montaje</h4>
+          <p>Películas de apenas un minuto —los 17 metros que cabían en el chasis de la cámara—. Plano general y cámara fija. Sin ser conscientes de ello, ya aplicaban una forma de montaje: elegían con enorme cálculo el lugar exacto donde colocar la cámara.</p>
+        </div>
+        <div class="hito">
+          <span class="anio">Hacia 1900</span>
+          <h4>Méliès: cuadros y el «stop trick»</h4>
+          <p>Sus películas empezaron a componerse de varios cuadros y necesitaron continuidad, aunque de raíz teatral. Descubrió que si paraba la cámara y colocaba o retiraba un objeto, al reanudar el rodaje la realidad parecía manipulada: nace el efecto de «desaparición».</p>
+        </div>
+        <div class="hito">
+          <span class="anio">1901–1903</span>
+          <h4>Smith, Williamson y Porter</h4>
+          <p>George A. Smith concibe el montaje como la posibilidad de ordenar la película filmada. Williamson rueda la primera persecución de la historia. Porter, en <em>La vida de un bombero americano</em> (1902), logra que el significado de un plano dependa de su relación con los demás; en <em>Asalto y robo a un tren</em> introduce las acciones paralelas.</p>
+        </div>
+        <div class="hito">
+          <span class="anio">1910s</span>
+          <h4>Griffith: forma definitiva</h4>
+          <p>Asocia el montaje a las necesidades dramáticas. Inventa el fundido a negro para no cortar las escenas de forma abrupta. En <em>El nacimiento de una nación</em> perfecciona el <strong>montaje alternante</strong> —escenas simultáneas en lugares distintos, con suspense creciente—. En <em>Intolerancia</em> ensaya el <strong>montaje paralelo</strong> —historias que no coinciden ni en tiempo ni en espacio— y el <strong>montaje invertido</strong>, la retroacción que hoy llamamos flashback.</p>
+        </div>
+        <div class="hito">
+          <span class="anio">Años 1920</span>
+          <h4>Eisenstein: montaje ideológico</h4>
+          <p>En Rusia se trabaja con un montaje menos narrativo y más ideológico. El <strong>montaje de choque</strong> —o «de atracciones»— combina planos para generar respuestas emocionales que sensibilicen sobre un problema, como en <em>La huelga</em>. El <strong>montaje intelectual</strong> construye un sistema de ideas a partir de una línea narrativa mínima.</p>
+        </div>
+        <div class="hito">
+          <span class="anio">1930–1940</span>
+          <h4>El sonoro y la economía narrativa</h4>
+          <p>Los primeros años del sonoro repiten los hallazgos formales del mudo. El diálogo sincronizado permite después una economía narrativa imposible antes, con obras como <em>Ciudadano Kane</em> de Orson Welles.</p>
+        </div>
+        <div class="hito">
+          <span class="anio">Finales de los 50</span>
+          <h4>La nouvelle vague</h4>
+          <p>Cambio radical en la forma de montar: algunos directores regresan al «no-montaje» y al rodaje en plano secuencia.</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 9 -->
+    <section id="tipos">
+      <h2><span class="num">09</span>Tipos de montaje y sus funciones</h2>
+      <p class="entradilla">El montaje ordena rítmica y narrativamente los planos rodados según una idea previa. Puede clasificarse según el conjunto del relato o según lo que ocurre dentro de una misma secuencia.</p>
+
+      <h3>Según la totalidad del relato</h3>
+      <div class="scroll-x">
+        <table class="tabla">
+          <thead><tr><th>Tipo</th><th>En qué consiste</th></tr></thead>
+          <tbody>
+            <tr><td>Narrativo o clásico</td><td>Cuenta los hechos cronológicamente o con saltos —flash-forward, flash-back— pero siempre organizados con forma narrativa.</td></tr>
+            <tr><td>Ideológico</td><td>Trabaja con las emociones apoyándose en símbolos y gestos.</td></tr>
+            <tr><td>Creativo o abstracto</td><td>Ordena sin cronología, como una operación nueva que busca coherencia, ritmo y belleza.</td></tr>
+            <tr><td>Expresivo</td><td>Marca el ritmo de la acción: rápido en la aventura y la acción, lento en el drama y el suspense.</td></tr>
+            <tr><td>Rítmico</td><td>Aspecto métrico: la longitud de las tomas. Tomas largas dan languidez; tomas cortas, casi flashes, dan sensación de velocidad.</td></tr>
+            <tr><td>Poético</td><td>Se combina como una obra poética: los fragmentos responden a la intención expresiva del realizador.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Dentro de una misma secuencia</h3>
+      <div class="fichas dos">
+        <div class="ficha"><h4 class="term">Analítico o externo</h4><p>Fragmenta la secuencia en muchos planos cortos y cerrados. Analiza la realidad parte por parte.</p></div>
+        <div class="ficha"><h4 class="term">Sintético o interno</h4><p>Planos más amplios, con movimiento y profundidad de campo: se ve a la vez el frente y el fondo. Ofrece una visión de conjunto, sin voluntad de análisis.</p></div>
+      </div>
+
+      <h3>Qué consigue montar</h3>
+      <div class="fichas dos">
+        <div class="ficha"><h4 class="term">Crear nuevos espacios</h4><p>Vincula objetos, espacios o personas que en origen no tenían relación.</p></div>
+        <div class="ficha"><h4 class="term">Manipular el tiempo</h4><p>Mediante elipsis o cambios de dirección temporal.</p></div>
+        <div class="ficha"><h4 class="term">Dar sentido narrativo</h4><p>Pone unas imágenes en relación con otras.</p></div>
+        <div class="ficha"><h4 class="term">Crear relaciones poéticas e ideológicas</h4><p>Por analogía, por contraste o por causa-efecto: uno bebiendo, luego un accidente.</p></div>
+      </div>
+
+      <div class="nota"><p><strong>El montaje por ordenador (AVID):</strong> trabaja con el material digitalizado, sin necesidad de positivar la imagen. Permite acceder de inmediato a cualquier fotograma, aumentarlo, transformarlo, colorearlo o trucarlo, algo impensable en la moviola.</p></div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 10 -->
+    <section id="videos">
+      <h2><span class="num">10</span>Vídeos de apoyo</h2>
+      <p class="entradilla">Selección de los enlaces citados en los apuntes del bloque. Se abren en una pestaña nueva.</p>
+      <ul class="videos">
+        <li><a href="https://www.youtube.com/watch?v=6oy3HmYiLuM" target="_blank" rel="noopener">La continuidad cinematográfica</a><span>01 · Raccord</span></li>
+        <li><a href="https://www.youtube.com/watch?v=PemStpjppJ0" target="_blank" rel="noopener">Qué es el raccord, explicado</a><span>01 · Raccord</span></li>
+        <li><a href="https://www.youtube.com/watch?v=f9oDJspw-mc" target="_blank" rel="noopener">Errores de raccord ilustrados (1)</a><span>01 · Raccord</span></li>
+        <li><a href="https://www.youtube.com/watch?v=yDCCRvx5EC4" target="_blank" rel="noopener">Errores de raccord ilustrados (2)</a><span>01 · Raccord</span></li>
+        <li><a href="https://www.youtube.com/watch?v=L3iKLXPNhPw" target="_blank" rel="noopener">Errores de raccord ilustrados (3)</a><span>01 · Raccord</span></li>
+        <li><a href="https://www.youtube.com/watch?v=0sThjg09U3g" target="_blank" rel="noopener">Qué es la elipsis</a><span>03 · Elipsis</span></li>
+        <li><a href="https://www.youtube.com/watch?v=RQ5HZNe-YFQ" target="_blank" rel="noopener">Elipsis expresiva: 2001, una odisea del espacio</a><span>03 · Elipsis</span></li>
+        <li><a href="https://www.youtube.com/watch?v=NYhtxuaBa_A" target="_blank" rel="noopener">La elipsis temporal explicada</a><span>03 · Elipsis</span></li>
+        <li><a href="https://www.youtube.com/watch?v=_78PjfOlrTo" target="_blank" rel="noopener">La regla de los 180.º explicada</a><span>05 · Eje de acción</span></li>
+        <li><a href="https://www.youtube.com/watch?v=5Jo6rnaf3F0" target="_blank" rel="noopener">La regla de los 180.º con ejemplos de películas</a><span>05 · Eje de acción</span></li>
+        <li><a href="https://www.youtube.com/watch?v=zgKPX7IQ44Y" target="_blank" rel="noopener">Plano y contraplano, explicado</a><span>06 · Plano-contraplano</span></li>
+        <li><a href="https://www.youtube.com/watch?v=VUntpOkO8v0" target="_blank" rel="noopener">El plano-contraplano de los hermanos Coen</a><span>06 · Plano-contraplano</span></li>
+        <li><a href="https://www.youtube.com/watch?v=xPmqrtOkBCQ" target="_blank" rel="noopener">Ejemplos de plano máster</a><span>07 · Plano máster</span></li>
+        <li><a href="https://www.youtube.com/watch?v=WLzaRpo1loM" target="_blank" rel="noopener">Historia del montaje cinematográfico</a><span>08 · Evolución del montaje</span></li>
+        <li><a href="https://youtu.be/ZNAHcMMOHE8?si=a0VA2iDaevDsZpex" target="_blank" rel="noopener">Georges Méliès: Un viaje a la Luna (1902)</a><span>08 · Evolución del montaje</span></li>
+        <li><a href="https://youtu.be/3MgYVgszFGw?si=YXDRPTVVD0fCXKQH" target="_blank" rel="noopener">Eisenstein: El acorazado Potemkin (1925)</a><span>08 · Evolución del montaje</span></li>
+        <li><a href="https://www.youtube.com/watch?v=f4CyUIVoZlM" target="_blank" rel="noopener">Qué es el montaje audiovisual</a><span>09 · Tipos de montaje</span></li>
+      </ul>
+    </section>
+
+    <hr class="sep">
+
+    <!-- 11 -->
+    <section id="test">
+      <h2><span class="num">11</span>Autoevaluación</h2>
+      <p class="entradilla">Diez preguntas sobre el bloque. Cada respuesta explica por qué, y puedes repetir el test cuantas veces quieras.</p>
+      <div class="quiz" id="quiz"></div>
+      <div class="marcador">
+        <span>Aciertos</span>
+        <output id="marcador">0 / 10</output>
+        <button class="btn" id="reiniciar">Empezar de nuevo</button>
+      </div>
+    </section>
+
+    <footer>
+      <p>Material de aula de Imagen y Sonido, 2.º de Bachillerato Artístico. Contenidos basados en los apuntes del tema «Recursos expresivos» de la Escuela de Arte Miguel Marmolejo (prof. Rubén Hernández García) y en la entrada «Bloque 2: Análisis de situaciones audiovisuales» del blog <em>Imagen y Sonido 2.º Bachillerato</em> (Isabel Ballesta).</p>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var raiz = document.documentElement;
+  var temaBtn = document.getElementById('temaBtn');
+  function oscuroActivo(){
+    var t = raiz.getAttribute('data-theme');
+    if(t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  function pintarBotonTema(){ temaBtn.textContent = oscuroActivo() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'; }
+  temaBtn.addEventListener('click', function(){
+    raiz.setAttribute('data-theme', oscuroActivo() ? 'light' : 'dark');
+    pintarBotonTema();
+  });
+  pintarBotonTema();
+
+  var tc = document.getElementById('tc');
+  var f = 0;
+  setInterval(function(){
+    f = (f + 1) % (25*60*60);
+    var s = Math.floor(f/25), fr = f % 25;
+    var mm = Math.floor(s/60) % 60, ss = s % 60, hh = Math.floor(s/3600);
+    function d(n){ return (n<10?'0':'') + n; }
+    tc.textContent = d(hh)+':'+d(mm)+':'+d(ss)+':'+d(fr);
+  }, 40);
+
+  /* ---------- 03 Clasificador de elipsis ---------- */
+  var ejemplos = [
+    {t:'Un rótulo indica «cuatro años después» y la trama continúa sin mostrar ese tiempo.',
+     tipo:'Inherente', exp:'Elimina un periodo débil para la acción y ajusta la duración del metraje. Es el caso de Náufrago, con una elipsis de cuatro años en la isla.'},
+    {t:'Un objeto lanzado al aire se transforma, en el mismo movimiento, en otro objeto de una época completamente distinta.',
+     tipo:'Expresiva', exp:'Busca un efecto simbólico, no solo ahorrar tiempo. Es el corte de 2001: una odisea del espacio, del hueso al satélite.'},
+    {t:'Un personaje es asesinado por alguien que la cámara no muestra; el espectador lo descubrirá al final, igual que el detective.',
+     tipo:'De estructura — objetiva', exp:'Oculta al espectador lo mismo que a los personajes: nadie sabe quién fue, ni siquiera quien mira.'},
+    {t:'El protagonista deja de escuchar lo que dicen los demás y empieza a hablar consigo mismo; el sonido externo desaparece.',
+     tipo:'De estructura — subjetiva', exp:'Lo que ignora el personaje lo ignora también el espectador: se suprime el sonido externo para meternos en su cabeza.'},
+    {t:'Una escena de violencia explícita se corta justo antes del golpe y se retoma después.',
+     tipo:'De contenido', exp:'Responde a la censura social: se elimina lo que resulta demasiado explícito, sea sexo, violencia o heridas.'}
+  ];
+  var contElipsis = document.getElementById('clasifElipsis');
+  var revelado = document.getElementById('revelado');
+  ejemplos.forEach(function(e, i){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tarjeta-op';
+    b.innerHTML = '<b>Ejemplo ' + (i+1) + '</b>' + e.t;
+    b.addEventListener('click', function(){
+      revelado.innerHTML = '<strong>' + e.tipo + '.</strong> ' + e.exp;
+      revelado.classList.add('visible');
+      revelado.scrollIntoView({block:'nearest', behavior:'smooth'});
+    });
+    contElipsis.appendChild(b);
+  });
+
+  /* ---------- 05 Ley del eje ---------- */
+  var ejeOk = document.getElementById('ejeOk');
+  var ejeKo = document.getElementById('ejeKo');
+  var cam2 = document.getElementById('cam2');
+  var ojosB = document.getElementById('ojosB');
+  var ejeTexto = document.getElementById('ejeTexto');
+  function estadoEje(correcto){
+    ejeOk.classList.toggle('activo', correcto);
+    ejeOk.setAttribute('aria-pressed', correcto?'true':'false');
+    ejeKo.classList.toggle('activo', !correcto);
+    ejeKo.setAttribute('aria-pressed', !correcto?'true':'false');
+    cam2.setAttribute('transform', correcto ? 'translate(260,175)' : 'translate(260,-15) rotate(180)');
+    ojosB.setAttribute('transform', correcto ? 'translate(0,0)' : 'translate(14,0)');
+    ejeTexto.textContent = correcto
+      ? 'Ambas cámaras están en la misma mitad del escenario. Al montar plano y contraplano, las miradas se corresponden: el espectador entiende que A y B hablan entre sí.'
+      : 'La cámara 2 ha cruzado el eje: los dos personajes miran ahora hacia el mismo lado de la pantalla y parece que hablan con otra persona. Es un salto de eje.';
+  }
+  ejeOk.addEventListener('click', function(){ estadoEje(true); });
+  ejeKo.addEventListener('click', function(){ estadoEje(false); });
+  estadoEje(true);
+
+  /* ---------- 11 Autoevaluación ---------- */
+  var preguntas = [
+    {p:'Un protagonista mantiene la ropa impoluta tras una pelea de veinte minutos. ¿Qué tipo de raccord se ha priorizado?',
+     o:['Raccord de vestuario','Raccord de iluminación','Raccord de posición de cámara','Raccord de miradas'], c:0,
+     f:'El raccord de vestuario respeta —o disimula— los cambios de la ropa según el guion, aunque no sea lo más «natural».'},
+    {p:'¿Cuál es la diferencia entre continuidad narrativa y raccord?',
+     o:['Son sinónimos exactos','La continuidad narrativa es el mensaje único; el raccord es el ajuste técnico que lo logra','El raccord es solo sonoro','La continuidad narrativa solo existe en el cine mudo'], c:1,
+     f:'La continuidad narrativa equivale al guion literario; el raccord, al guion técnico que la sostiene con cámara, actores y atrezo.'},
+    {p:'Un plano se disuelve gradualmente en el siguiente, con un instante en que ambos se ven con igual intensidad. ¿Qué transición es?',
+     o:['Corte directo','Cortinilla','Fundido encadenado','Barrido'], c:2,
+     f:'El fundido encadenado superpone dos tomas durante un breve lapso: la saliente desaparece mientras la entrante gana nitidez.'},
+    {p:'En 2001: una odisea del espacio, un hueso lanzado al aire se convierte en un satélite. ¿Qué tipo de elipsis es?',
+     o:['Inherente','Expresiva','De estructura objetiva','De contenido'], c:1,
+     f:'Es una elipsis expresiva: no ahorra tiempo sin más, construye un significado simbólico sobre la evolución tecnológica.'},
+    {p:'Un personaje dejar de escuchar el diálogo y su pensamiento suena en primera persona sin sonido externo. ¿Qué elipsis es?',
+     o:['De estructura objetiva','De estructura subjetiva','Inherente','De contenido'], c:1,
+     f:'Es subjetiva: lo que ignora el personaje lo ignora también el espectador.'},
+    {p:'¿Qué ventaja de producción, además de la narrativa, tiene el fuera de campo?',
+     o:['Ninguna, solo narrativa','Ahorra medios: no hace falta rodar todo lo que se sugiere','Obliga a rodar más planos','Elimina la necesidad de sonido'], c:1,
+     f:'Al sugerir sin mostrar, el fuera de campo también ahorra rodaje: no hace falta filmar cada elemento de la escena.'},
+    {p:'Dos cámaras filman un diálogo desde lados opuestos del eje de acción. ¿Qué ocurre al montar plano y contraplano?',
+     o:['Se logra un raccord perfecto','Se produce un salto de eje: parece que hablan con otra persona','Se crea un plano máster','No pasa nada, es indiferente'], c:1,
+     f:'Cruzar el eje invierte la dirección de las miradas en el montaje: el espectador percibe que los personajes no se miran entre sí.'},
+    {p:'¿Qué distingue el plano-contraplano de los hermanos Coen del uso tradicional?',
+     o:['Usan siempre teleobjetivo y muestran el escorzo','Evitan el escorzo, usan gran angular y sitúan la cámara entre los personajes','No usan plano-contraplano nunca','Ruedan siempre en plano secuencia'], c:1,
+     f:'Deakins y los Coen prescinden del escorzo del interlocutor y colocan la cámara dentro del espacio físico de la conversación, con gran angular.'},
+    {p:'¿A quién se atribuye la perfección del montaje alternante y el invento del fundido a negro?',
+     o:['Georges Méliès','Los hermanos Lumière','D. W. Griffith','Sergei Eisenstein'], c:2,
+     f:'Griffith asocia el montaje a la necesidad dramática, perfecciona el montaje alternante en El nacimiento de una nación e inventa el fundido a negro.'},
+    {p:'El montaje que fragmenta una secuencia en muchos planos cortos y cerrados para analizar la realidad parte por parte se llama...',
+     o:['Montaje sintético o interno','Montaje analítico o externo','Montaje ideológico','Montaje poético'], c:1,
+     f:'El montaje analítico o externo trocea la secuencia en planos cortos; el sintético, al contrario, usa planos amplios y profundidad de campo.'}
+  ];
+  var letras = ['A','B','C','D'];
+  var quiz = document.getElementById('quiz');
+  var marcador = document.getElementById('marcador');
+  var aciertos = 0;
+
+  function pintarMarcador(){ marcador.textContent = aciertos + ' / ' + preguntas.length; }
+  function construirQuiz(){
+    quiz.innerHTML = '';
+    aciertos = 0; pintarMarcador();
+    preguntas.forEach(function(q, i){
+      var bloque = document.createElement('div');
+      bloque.className = 'preg';
+      var enun = document.createElement('p');
+      enun.innerHTML = '<span class="n">' + (i+1) + '</span>';
+      enun.appendChild(document.createTextNode(q.p));
+      bloque.appendChild(enun);
+
+      var ops = document.createElement('div');
+      ops.className = 'ops';
+      var fb = document.createElement('p');
+      fb.className = 'feedback';
+
+      q.o.forEach(function(texto, j){
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'op';
+        var l = document.createElement('span');
+        l.className = 'letra';
+        l.textContent = letras[j];
+        b.appendChild(l);
+        b.appendChild(document.createTextNode(texto));
+        b.addEventListener('click', function(){
+          Array.prototype.forEach.call(ops.children, function(o){ o.disabled = true; });
+          var bien = j === q.c;
+          b.classList.add(bien ? 'bien' : 'mal');
+          if(!bien) ops.children[q.c].classList.add('bien');
+          fb.textContent = (bien ? 'Correcto. ' : 'No es esa. ') + q.f;
+          fb.classList.add('visible');
+          if(bien) aciertos++;
+          pintarMarcador();
+        });
+        ops.appendChild(b);
+      });
+      bloque.appendChild(ops);
+      bloque.appendChild(fb);
+      quiz.appendChild(bloque);
+    });
+  }
+  document.getElementById('reiniciar').addEventListener('click', function(){
+    construirQuiz();
+    document.getElementById('test').scrollIntoView({block:'start'});
+  });
+  construirQuiz();
+
+  /* ---------- Índice activo ---------- */
+  var enlaces = Array.prototype.slice.call(document.querySelectorAll('.indice a'));
+  var secciones = enlaces.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entradas){
+      entradas.forEach(function(e){
+        if(e.isIntersecting){
+          enlaces.forEach(function(a){ a.classList.remove('activo'); });
+          var idx = secciones.indexOf(e.target);
+          if(idx > -1) enlaces[idx].classList.add('activo');
+        }
+      });
+    }, {rootMargin:'-20% 0px -70% 0px'});
+    secciones.forEach(function(s){ if(s) obs.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>
